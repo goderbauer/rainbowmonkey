@@ -12,12 +12,12 @@ import '../loggers.dart';
 import '../mocks.dart';
 
 void main() {
-  final List<String> log = <String>[];
+  final log = <String>[];
   LoggingTwitarrConfiguration.register(log);
 
   testWidgets('Deck Plans', (WidgetTester tester) async {
     log.clear();
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: const LoggingTwitarrConfiguration(0),
       store: TrivialDataStore(log),
       onError: (UserFriendlyError error) { log.add('error: $error!'); },
@@ -32,13 +32,13 @@ void main() {
       ),
     );
 
-    final Finder elevatorFinder = find.byWidgetPredicate((Widget widget) => widget is CustomPaint && widget.painter is Elevator);
+    final elevatorFinder = find.byWidgetPredicate((Widget widget) => widget is CustomPaint && widget.painter is Elevator);
 
     expect(find.byIcon(Icons.directions_boat), findsOneWidget);
     await tester.tap(find.byIcon(Icons.directions_boat));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
-    final double height = tester.getRect(elevatorFinder).height / 11.0;
+    final height = tester.getRect(elevatorFinder).height / 11.0;
 
     expectOpacities(tester, <double>[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]);
 
@@ -82,7 +82,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expectOpacities(tester, <double>[0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
 
-    final TestGesture gesture = await tester.startGesture(tester.getCenter(find.text('9')));
+    final gesture = await tester.startGesture(tester.getCenter(find.text('9')));
     await gesture.moveBy(const Offset(0.0, kDragSlopDefault));
     await gesture.moveBy(Offset(0.0, height * 0.5));
     await tester.pump();
@@ -94,7 +94,7 @@ void main() {
 }
 
 void expectOpacities(WidgetTester tester, List<double> opacities) {
-  final List<FadeTransition> transitions = tester.widgetList(find.descendant(
+  final transitions = tester.widgetList(find.descendant(
     of: find.byType(Deck),
     matching: find.byType(FadeTransition),
   )).map<FadeTransition>((Widget widget) => widget as FadeTransition).toList();

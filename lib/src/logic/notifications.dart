@@ -27,9 +27,9 @@ class Notifications {
   static Future<Notifications> get instance {
     if (_future != null)
       return _future;
-    final Completer<Notifications> completer = Completer<Notifications>();
+    final completer = Completer<Notifications>();
     _future = completer.future;
-    final Notifications result = Notifications._(overridePlugin ?? FlutterLocalNotificationsPlugin());
+    final result = Notifications._(overridePlugin ?? FlutterLocalNotificationsPlugin());
     result._plugin.initialize(
       const InitializationSettings(
         AndroidInitializationSettings('@drawable/notifications'),
@@ -121,7 +121,7 @@ class Notifications {
   }
 
   Future<void> messageUnread(String threadId, String messageId, DateTime timestamp, String subject, User user, TwitarrString message, Twitarr twitarr, DataStore store) async {
-    final AndroidNotificationDetails android = AndroidNotificationDetails(
+    final android = AndroidNotificationDetails(
       'cruisemonkey-seamail',
       'Seamail',
       'Seamail notifications',
@@ -151,7 +151,7 @@ class Notifications {
       autoCancel: true,
       channelShowBadge: true,
     );
-    final IOSNotificationDetails iOS = IOSNotificationDetails();
+    final iOS = IOSNotificationDetails();
     await _plugin.show(
       _notificationId(threadId, messageId),
       subject,
@@ -164,7 +164,7 @@ class Notifications {
   Future<void> event({ String eventId, Duration duration, String from, String to, String name, String location, String description, DataStore store }) async {
     if (await store.didShowEventNotification(eventId))
       return;
-    final AndroidNotificationDetails android = AndroidNotificationDetails(
+    final android = AndroidNotificationDetails(
       'cruisemonkey-calendar',
       'Events',
       'JocoCruise event notifications, for events you have favorited.',
@@ -182,7 +182,7 @@ class Notifications {
       channelShowBadge: false,
       timeoutAfter: duration.inMilliseconds,
     );
-    final IOSNotificationDetails iOS = IOSNotificationDetails();
+    final iOS = IOSNotificationDetails();
     await _plugin.show(
       _eventId(eventId),
       name,

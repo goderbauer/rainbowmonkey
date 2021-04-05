@@ -54,7 +54,7 @@ class _CalendarViewState extends State<CalendarView> with SingleTickerProviderSt
 
   void _handleFavorite(Event event, bool favorite) async {
     _activePendingUpdates += 1;
-    final _PendingFavoriteUpdate update = _pendingUpdates.putIfAbsent(event.id, () => _PendingFavoriteUpdate());
+    final update = _pendingUpdates.putIfAbsent(event.id, () => _PendingFavoriteUpdate());
     setState(() {
       update.state = favorite;
     });
@@ -87,7 +87,7 @@ class _CalendarViewState extends State<CalendarView> with SingleTickerProviderSt
             return ValueListenableBuilder<bool>(
               valueListenable: _filter,
               builder: (BuildContext context, bool filtered, Widget child) {
-                List<Event> filteredEvents = calendar.events;
+                var filteredEvents = calendar.events;
                 Widget excuse;
                 if (filteredEvents.isEmpty) {
                   excuse = iconAndLabel(icon: Icons.sentiment_neutral, message: 'Calendar is empty');
@@ -96,10 +96,10 @@ class _CalendarViewState extends State<CalendarView> with SingleTickerProviderSt
                   if (filteredEvents.isEmpty)
                     excuse = iconAndLabel(icon: Icons.sentiment_neutral, message: 'You have not marked any events');
                 }
-                final DateTime now = Now.of(context);
-                final bool isLoggedIn = Cruise.of(context).isLoggedIn;
-                final List<Event> beforeEvents = filteredEvents.where((Event event) => !event.endTime.isAfter(now)).toList().reversed.toList();
-                final List<Event> afterEvents = filteredEvents.where((Event event) => event.endTime.isAfter(now)).toList();
+                final now = Now.of(context);
+                final isLoggedIn = Cruise.of(context).isLoggedIn;
+                final beforeEvents = filteredEvents.where((Event event) => !event.endTime.isAfter(now)).toList().reversed.toList();
+                final afterEvents = filteredEvents.where((Event event) => event.endTime.isAfter(now)).toList();
                 return _CalendarViewInternals(
                   excuse: excuse,
                   isLoggedIn: isLoggedIn,
@@ -171,7 +171,7 @@ class _CalendarViewInternalsState extends State<_CalendarViewInternals> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = <Widget>[
+    final children = <Widget>[
       CustomScrollView(
         controller: _controller,
         center: _afterKey,
@@ -208,9 +208,9 @@ class _CalendarViewInternalsState extends State<_CalendarViewInternals> {
       AnimatedBuilder(
         animation: _controller,
         builder: (BuildContext context, Widget child) {
-          final double position = _controller.position.pixels;
-          final EdgeInsets padding = MediaQuery.of(context).padding;
-          final bool showIt = position < -widget.constraints.maxHeight || position > widget.constraints.maxHeight / 3.0;
+          final position = _controller.position.pixels;
+          final padding = MediaQuery.of(context).padding;
+          final showIt = position < -widget.constraints.maxHeight || position > widget.constraints.maxHeight / 3.0;
           return PositionedDirectional(
             end: 24.0,
             top: position > 0.0 ? padding.top + 16.0 : null,
@@ -283,7 +283,7 @@ class EventList extends StatelessWidget {
           DateTime lastTime;
           if (index > 0)
             lastTime = events[index - 1].startTime;
-          final Event event = events[index];
+          final event = events[index];
           return TimeSlice(
             event: event,
             now: now,
@@ -335,21 +335,21 @@ class TimeSlice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool use24Hour = MediaQuery.of(context).alwaysUse24HourFormat;
-    final List<Widget> eventDetails = <Widget>[
+    final use24Hour = MediaQuery.of(context).alwaysUse24HourFormat;
+    final eventDetails = <Widget>[
       Text(event.title, style: const TextStyle(fontWeight: FontWeight.bold)),
       if (event.location.isNotEmpty)
         Text(event.location, style: const TextStyle(fontStyle: FontStyle.italic)),
       if (event.description != null)
         PrettyText(event.description),
     ];
-    final DateTime lastTime = lastStartTime?.toLocal();
-    final DateTime lastDay = lastTime != null ? DateTime(lastTime.year, lastTime.month, lastTime.day) : null;
-    final DateTime startTime = event.startTime.toLocal();
-    final DateTime startDay = DateTime(startTime.year, startTime.month, startTime.day);
-    final DateTime endTime = event.endTime.toLocal();
-    final bool allDay = endTime.difference(startTime) >= const Duration(days: 1);
-    final List<Widget> times = <Widget>[];
+    final lastTime = lastStartTime?.toLocal();
+    final lastDay = lastTime != null ? DateTime(lastTime.year, lastTime.month, lastTime.day) : null;
+    final startTime = event.startTime.toLocal();
+    final startDay = DateTime(startTime.year, startTime.month, startTime.day);
+    final endTime = event.endTime.toLocal();
+    final allDay = endTime.difference(startTime) >= const Duration(days: 1);
+    final times = <Widget>[];
     if (allDay) {
       times.add(const Text('all day'));
     } else {
@@ -363,7 +363,7 @@ class TimeSlice extends StatelessWidget {
     } else {
       times.add(const Opacity(opacity: 0.0, child: Text('-88:88pm')));
     }
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
     Color todayColor;
     switch (theme.brightness) {
       case Brightness.light:
@@ -420,7 +420,7 @@ class TimeSlice extends StatelessWidget {
       );
     }
 
-    final List<Widget> children = <Widget>[row];
+    final children = <Widget>[row];
     DateTime dayAbove, dayBelow;
     switch (direction) {
       case GrowthDirection.forward:
@@ -479,8 +479,8 @@ class DayHeaderRow extends StatelessWidget {
       case 11: monthName = 'November'; break;
       case 12: monthName = 'December'; break;
     }
-    final int dayNumber = headerDay.day;
-    final ThemeData theme = Theme.of(context);
+    final dayNumber = headerDay.day;
+    final theme = Theme.of(context);
     return StatusBarBackground(
       brightness: theme.accentColorBrightness,
       child: Material(

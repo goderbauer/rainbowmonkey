@@ -20,14 +20,14 @@ import '../loggers.dart';
 import '../mocks.dart';
 
 Future<void> main() async {
-  final List<String> log = <String>[];
+  final log = <String>[];
   Notifications.overridePlugin = FlutterLocalNotificationsPlugin.private(FakePlatform(operatingSystem: 'android'));
   RestTwitarrConfiguration.register();
   LoggingTwitarrConfiguration.register(log);
 
   testWidgets('Settings', (WidgetTester tester) async {
     log.clear();
-    final TrivialDataStore store = TrivialDataStore(log);
+    final store = TrivialDataStore(log);
     store.storedCredentials = const Credentials(username: 'aaa', password: 'aaaaaa', key: 'blabla');
     final CruiseModel model = _TestCruiseModel(
       initialTwitarrConfiguration: const RestTwitarrConfiguration(baseUrl: 'https://www.example.com/'),

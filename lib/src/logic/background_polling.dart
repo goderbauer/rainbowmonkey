@@ -73,7 +73,7 @@ Future<void> _periodicCallback() async {
           print('Background thread handled user tapping notification with payload "$payload".');
           return true;
         }());
-        final SendPort port = IsolateNameServer.lookupPortByName('main');
+        final port = IsolateNameServer.lookupPortByName('main');
         if (port == null) {
           print('Application is not running; could not show thread.');
           return;
@@ -89,7 +89,7 @@ Future<void> _periodicCallback() async {
           print('Background thread handled user tapping notification with payload "$kCalendarPayload".');
           return true;
         }());
-        final SendPort port = IsolateNameServer.lookupPortByName('main');
+        final port = IsolateNameServer.lookupPortByName('main');
         if (port == null) {
           print('Application is not running; could not show calendar.');
           return;
@@ -113,9 +113,9 @@ Future<void> _periodicCallback() async {
   try {
     try {
       final DataStore store = DiskDataStore();
-      final Map<Setting, dynamic> settings = await store.restoreSettings().asFuture();
-      final String server = settings[Setting.server] as String;
-      final Twitarr twitarr = TwitarrConfiguration.from(server, kShipTwitarr).createTwitarr();
+      final settings = await store.restoreSettings().asFuture();
+      final server = settings[Setting.server] as String;
+      final twitarr = TwitarrConfiguration.from(server, kShipTwitarr).createTwitarr();
       assert(() {
         if (settings.containsKey(Setting.debugNetworkLatency))
           twitarr.debugLatency = settings[Setting.debugNetworkLatency] as double;
@@ -123,9 +123,9 @@ Future<void> _periodicCallback() async {
           twitarr.debugReliability = settings[Setting.debugNetworkReliability] as double;
         return true;
       }());
-      final Credentials credentials = await store.restoreCredentials().asFuture();
+      final credentials = await store.restoreCredentials().asFuture();
       // try to spread the load over several seconds, in case the OSes get synchronized somehow
-      final DateTime now = DateTime.now().toUtc();
+      final now = DateTime.now().toUtc();
       await Future<void>.delayed(Duration(seconds: math.Random().nextInt(20)));
       await checkUpdateIntervals(twitarr, now, updateIntervals?.updateIntervals ?? const Duration(seconds: 30));
       await checkForMessages(credentials, twitarr, store, now, updateIntervals.seamail);
@@ -170,7 +170,7 @@ Future<void> checkForMessages(Credentials credentials, Twitarr twitarr, DataStor
       print('I call my phone and I check my messages.');
       return true;
     }());
-    final DateTime lastCheck = DateTime.fromMillisecondsSinceEpoch(
+    final lastCheck = DateTime.fromMillisecondsSinceEpoch(
       await store.restoreSetting(Setting.lastNotificationsCheck).asFuture() as int ?? 0,
       isUtc: true,
     );
@@ -188,18 +188,18 @@ Future<void> checkForMessages(Credentials credentials, Twitarr twitarr, DataStor
         credentials: credentials,
         freshnessToken: freshnessToken,
       ).asFuture();
-      final int result = summary.freshnessToken;
+      final result = summary.freshnessToken;
       if (freshnessToken == null)
         summary = null;
       return result;
     });
     await store.saveSetting(Setting.lastNotificationsCheck, now.millisecondsSinceEpoch).asFuture();
     if (summary != null) {
-      bool didNotify = false;
-      final List<Future<void>> futures = <Future<void>>[];
-      final Notifications notifications = await Notifications.instance;
-      for (SeamailThreadSummary thread in summary.threads) {
-        for (SeamailMessageSummary message in thread.messages) {
+      var didNotify = false;
+      final futures = <Future<void>>[];
+      final notifications = await Notifications.instance;
+      for (var thread in summary.threads) {
+        for (var message in thread.messages) {
           futures.add(notifications.messageUnread(
             thread.id,
             message.id,
@@ -236,7 +236,7 @@ Future<void> checkForCalendar(Credentials credentials, Twitarr twitarr, DataStor
       print('Checking calendar.');
       return true;
     }());
-    final DateTime lastCheck = DateTime.fromMillisecondsSinceEpoch(
+    final lastCheck = DateTime.fromMillisecondsSinceEpoch(
       await store.restoreSetting(Setting.lastCalendarCheck).asFuture() as int ?? 0,
       isUtc: true,
     );
@@ -247,12 +247,12 @@ Future<void> checkForCalendar(Credentials credentials, Twitarr twitarr, DataStor
       }());
       return;
     }
-    final List<Future<void>> futures = <Future<void>>[];
-    final Notifications notifications = await Notifications.instance;
-    final UpcomingCalendar calendar = await twitarr.getUpcomingEvents(credentials: credentials, window: const Duration(minutes: 20)).asFuture();
-    final bool use24Hour = window.alwaysUse24HourFormat;
-    for (Event event in calendar.events) {
-      final Duration duration = event.startTime.difference(calendar.serverTime) + const Duration(minutes: 5);
+    final futures = <Future<void>>[];
+    final notifications = await Notifications.instance;
+    final calendar = await twitarr.getUpcomingEvents(credentials: credentials, window: const Duration(minutes: 20)).asFuture();
+    final use24Hour = window.alwaysUse24HourFormat;
+    for (var event in calendar.events) {
+      final duration = event.startTime.difference(calendar.serverTime) + const Duration(minutes: 5);
       futures.add(notifications.event(
         eventId: event.id,
         duration: duration, // how long to leave the notification up

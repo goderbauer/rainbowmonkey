@@ -14,7 +14,7 @@ linter:
     - always_declare_return_types
     - always_put_control_body_on_new_line
     - always_require_non_null_named_parameters
-    - always_specify_types
+    # - always_specify_types
     - annotate_overrides
     - avoid_catches_without_on_clauses
     - avoid_classes_with_only_static_members # add a private constructor when you hit this
@@ -50,6 +50,7 @@ linter:
     - no_adjacent_strings_in_list
     - no_duplicate_case_values
     - non_constant_identifier_names
+    - omit_local_variable_types
     - only_throw_errors
     - overridden_fields
     - package_api_docs

@@ -95,15 +95,15 @@ class Forums extends ChangeNotifier with IterableMixin<ForumThread>, BusyMixin {
     startBusy();
     _updating = true;
     try {
-      final ForumListSummary summary = await _twitarr.getForumThreads(
+      final summary = await _twitarr.getForumThreads(
         credentials: _credentials,
         fetchCount: _fetchCount,
       ).asFuture();
-      final Set<ForumSummary> newThreads = summary.forums;
-      final Set<ForumThread> removedThreads = Set<ForumThread>.from(_threads.values);
-      for (ForumSummary threadSummary in newThreads)
+      final newThreads = summary.forums;
+      final removedThreads = Set<ForumThread>.from(_threads.values);
+      for (var threadSummary in newThreads)
         removedThreads.remove(obtainForum(threadSummary));
-      for (ForumThread thread in removedThreads)
+      for (var thread in removedThreads)
         thread.obsolete();
       _freshCount = newThreads.length;
       _totalCount = summary.totalCount;
@@ -120,7 +120,7 @@ class Forums extends ChangeNotifier with IterableMixin<ForumThread>, BusyMixin {
 
   ForumThread obtainForum(ForumSummary threadSummary) {
     if (_threads.containsKey(threadSummary.id)) {
-      final ForumThread thread = _threads[threadSummary.id];
+      final thread = _threads[threadSummary.id];
       thread.updateFrom(threadSummary);
       return thread;
     }
@@ -135,7 +135,7 @@ class Forums extends ChangeNotifier with IterableMixin<ForumThread>, BusyMixin {
     if (_credentials == null)
       throw const LocalError('Cannot create a thread when not logged in.');
     return Progress<ForumThread>((ProgressController<ForumThread> completer) async {
-      final ForumSummary thread = await completer.chain<ForumSummary>(
+      final thread = await completer.chain<ForumSummary>(
         _twitarr.createForumThread(
           credentials: _credentials,
           subject: subject,
@@ -384,7 +384,7 @@ class ForumThread extends SearchResult with ChangeNotifier, BusyMixin, IterableM
   Progress<bool> deleteMessage(String messageId) {
     assert(_credentials != null);
     return Progress<bool>((ProgressController<bool> completer) async {
-      final bool threadDeleted = await completer.chain<bool>(
+      final threadDeleted = await completer.chain<bool>(
         _twitarr.deleteForumMessage(
           credentials: _credentials,
           threadId: id,
@@ -425,7 +425,7 @@ class ForumThread extends SearchResult with ChangeNotifier, BusyMixin, IterableM
 
   Progress<Set<User>> getReactions(String messageId, String reaction) {
     return Progress<Set<User>>((ProgressController<Set<User>> completer) async {
-      final Map<String, Set<UserSummary>> reactions = await completer.chain<Map<String, Set<UserSummary>>>(
+      final reactions = await completer.chain<Map<String, Set<UserSummary>>>(
         _twitarr.getForumMessageReactions(
           threadId: id,
           messageId: messageId,

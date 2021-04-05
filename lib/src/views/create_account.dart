@@ -50,13 +50,13 @@ class _CreateAccountState extends State<CreateAccount> {
 
   void _createAccount() async {
     assert(_valid);
-    final Progress<String> progress = Cruise.of(context).createAccount(
+    final progress = Cruise.of(context).createAccount(
       username: _username.text,
       password: _password1.text,
       registrationCode: _registrationCode.text,
       displayName: _displayName.text == '' ? null : _displayName.text,
     );
-    final _AccountCreationServerResponse serverResponse = await showDialog<_AccountCreationServerResponse>(
+    final serverResponse = await showDialog<_AccountCreationServerResponse>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) => _AccountCreationStatus(
@@ -315,10 +315,10 @@ class _AccountCreationStatus extends StatelessWidget {
         );
       },
       failedBuilder: (BuildContext context, Exception error, StackTrace stackTrace) {
-        final List<String> messages = <String>[];
-        final Map<_AccountCreationField, String> fields = <_AccountCreationField, String>{};
+        final messages = <String>[];
+        final fields = <_AccountCreationField, String>{};
         if (error is FieldErrors) {
-          for (String field in error.fields.keys) {
+          for (var field in error.fields.keys) {
             _AccountCreationField fieldIdentifier;
             switch (field) {
               case 'username': fieldIdentifier = _AccountCreationField.username; break;
@@ -331,7 +331,7 @@ class _AccountCreationStatus extends StatelessWidget {
             messages.addAll(error.fields[field]);
           }
         } else if (error is ServerError) {
-          for (String message in error.messages) {
+          for (var message in error.messages) {
             message = message.trim();
             // The server doesn't always send back fully punctuated messages, so
             // we fix them up here.

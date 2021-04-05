@@ -37,7 +37,7 @@ Future<void> main() async {
   });
 
   testWidgets('Song', (WidgetTester tester) async {
-    final List<Song> songs = <Song>[
+    final songs = <Song>[
       const Song('bb', 'aa', ''),
       const Song('aa', 'bb', ''),
       const Song('aa', 'aa', ''),

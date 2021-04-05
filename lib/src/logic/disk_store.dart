@@ -26,7 +26,7 @@ class DiskDataStore extends DataStore {
       '${await getDatabasesPath()}/config.db',
       version: 5,
       onUpgrade: (Database database, int oldVersion, int newVersion) async {
-        final Batch batch = database.batch();
+        final batch = database.batch();
         if (oldVersion < 1) {
           batch.execute('CREATE TABLE credentials (username STRING, password STRING, key STRING, loginTimestamp INTEGER)');
           batch.execute('INSERT INTO credentials DEFAULT VALUES');
@@ -51,7 +51,7 @@ class DiskDataStore extends DataStore {
   @override
   Progress<void> saveCredentials(Credentials value) {
     return Progress<void>((ProgressController<void> completer) async {
-      final Database database = await _database;
+      final database = await _database;
       await database.update('credentials', <String, dynamic>{
         'username': value?.username,
         'password': value?.password,
@@ -64,8 +64,8 @@ class DiskDataStore extends DataStore {
   @override
   Progress<Credentials> restoreCredentials() {
     return Progress<Credentials>((ProgressController<Credentials> completer) async {
-      final Database database = await _database;
-      final Map<String, dynamic> results = (await database.query(
+      final database = await _database;
+      final results = (await database.query(
         'credentials',
         columns: <String>['username', 'password', 'key', 'loginTimestamp'],
       )).single;
@@ -83,8 +83,8 @@ class DiskDataStore extends DataStore {
   @override
   Progress<void> saveSetting(Setting id, dynamic value) {
     return Progress<void>((ProgressController<void> completer) async {
-      final Uint8List bytes = _encodeValue(value);
-      final Database database = await _database;
+      final bytes = _encodeValue(value);
+      final database = await _database;
       await database.insert(
         'settings',
         <String, dynamic>{
@@ -99,14 +99,14 @@ class DiskDataStore extends DataStore {
   @override
   Progress<Map<Setting, dynamic>> restoreSettings() {
     return Progress<Map<Setting, dynamic>>((ProgressController<Map<Setting, dynamic>> completer) async {
-      final Database database = await _database;
-      final List<Map<String, dynamic>> rows = await database.query(
+      final database = await _database;
+      final rows = await database.query(
         'settings',
         columns: <String>['id', 'value'],
       );
-      final Map<Setting, dynamic> result = <Setting, dynamic>{};
-      for (Map<String, dynamic> row in rows) {
-        final Setting id = Setting.values[row['id'] as int];
+      final result = <Setting, dynamic>{};
+      for (var row in rows) {
+        final id = Setting.values[row['id'] as int];
         result[id] = _decodeValueOf(row);
       }
       return result;
@@ -116,8 +116,8 @@ class DiskDataStore extends DataStore {
   @override
   Progress<dynamic> restoreSetting(Setting id) {
     return Progress<dynamic>((ProgressController<dynamic> completer) async {
-      final Database database = await _database;
-      final List<Map<String, dynamic>> rows = await database.rawQuery(
+      final database = await _database;
+      final rows = await database.rawQuery(
         'SELECT value FROM settings WHERE id=?',
         <dynamic>[id.index],
       );
@@ -129,7 +129,7 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<void> addNotification(String threadId, String messageId) async {
-    final Database database = await _database;
+    final database = await _database;
     await database.insert(
       'notifications',
       <String, dynamic>{
@@ -142,7 +142,7 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<void> removeNotification(String threadId, String messageId) async {
-    final Database database = await _database;
+    final database = await _database;
     await database.delete(
       'notifications',
       where: 'thread=? AND message=?',
@@ -152,8 +152,8 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<List<String>> getNotifications(String threadId) async {
-    final Database database = await _database;
-    final List<Map<String, dynamic>> rows = await database.rawQuery(
+    final database = await _database;
+    final rows = await database.rawQuery(
       'SELECT message FROM notifications WHERE thread=?',
       <dynamic>[threadId],
     );
@@ -162,7 +162,7 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<void> addEventNotification(String eventId) async {
-    final Database database = await _database;
+    final database = await _database;
     await database.insert(
       'eventNotifications',
       <String, dynamic>{
@@ -174,8 +174,8 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<bool> didShowEventNotification(String eventId) async {
-    final Database database = await _database;
-    final List<Map<String, dynamic>> rows = await database.rawQuery(
+    final database = await _database;
+    final rows = await database.rawQuery(
       'SELECT event FROM eventNotifications WHERE event=?',
       <dynamic>[eventId],
     );
@@ -185,13 +185,13 @@ class DiskDataStore extends DataStore {
   @override
   Future<void> updateFreshnessToken(FreshnessCallback callback) async {
     assert(callback != null);
-    final Database database = await _database;
+    final database = await _database;
     await database.transaction((Transaction transaction) async {
-      final List<Map<String, dynamic>> rows = await transaction.rawQuery(
+      final rows = await transaction.rawQuery(
         'SELECT value FROM settings WHERE id=?',
         <dynamic>[Setting.notificationFreshnessToken.index],
       );
-      final int newValue = await callback(rows.isEmpty ? null : _decodeValueOf(rows.single) as int);
+      final newValue = await callback(rows.isEmpty ? null : _decodeValueOf(rows.single) as int);
       await transaction.insert(
         'settings',
         <String, dynamic>{
@@ -205,7 +205,7 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<void> heardAboutUserPhoto(String id, DateTime updateTime) async {
-    final Database database = await _database;
+    final database = await _database;
     await database.insert(
       'userPhotos',
       <String, dynamic>{
@@ -218,13 +218,13 @@ class DiskDataStore extends DataStore {
 
   @override
   Future<Map<String, DateTime>> restoreUserPhotoList() async {
-    final Database database = await _database;
-    final List<Map<String, dynamic>> rows = await database.query(
+    final database = await _database;
+    final rows = await database.query(
       'userPhotos',
       columns: <String>['id', 'value'],
     );
-    final Map<String, DateTime> result = <String, DateTime>{};
-    for (Map<String, dynamic> row in rows) {
+    final result = <String, DateTime>{};
+    for (var row in rows) {
       result[row['id'].toString()] = DateTime.fromMillisecondsSinceEpoch(row['value'] as int, isUtc: true);
     }
     return result;
@@ -240,8 +240,8 @@ class DiskDataStore extends DataStore {
 
   Future<_BytesAndFile> _putImageIfAbsent(String serverKey, String cacheName, String photoId, ImageFetcher callback) async {
     Uint8List bytes;
-    final String key = _encodePhotoKey(serverKey, cacheName, photoId);
-    final File cache = File(await _keyToPath(key));
+    final key = _encodePhotoKey(serverKey, cacheName, photoId);
+    final cache = File(await _keyToPath(key));
     try {
       bytes = await cache.readAsBytes();
     } on FileSystemException {
@@ -276,7 +276,7 @@ class DiskDataStore extends DataStore {
   }
 
   Uint8List _encodeValue(dynamic value) {
-    final ByteData encodedValue = const StandardMessageCodec().encodeMessage(value);
+    final encodedValue = const StandardMessageCodec().encodeMessage(value);
     return encodedValue.buffer.asUint8List(
       encodedValue.offsetInBytes,
       encodedValue.lengthInBytes,
@@ -284,8 +284,8 @@ class DiskDataStore extends DataStore {
   }
 
   dynamic _decodeValueOf(Map<String, dynamic> row) {
-    final Uint8List bytes = row['value'] as Uint8List;
-    final ByteData data = ByteData.view(bytes.buffer, bytes.offsetInBytes, bytes.lengthInBytes);
+    final bytes = row['value'] as Uint8List;
+    final data = ByteData.view(bytes.buffer, bytes.offsetInBytes, bytes.lengthInBytes);
     final dynamic value = const StandardMessageCodec().decodeMessage(data);
     return value;
   }

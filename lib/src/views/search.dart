@@ -24,9 +24,9 @@ abstract class CardRecord extends Record {
 
   @override
   Widget buildSearchResult(BuildContext context) {
-    final CruiseModel cruiseModel = Cruise.of(context);
-    final ContinuousProgress<AuthenticatedUser> userProgressSource = cruiseModel.user;
-    final ContinuousProgress<ServerStatus> serverStatusProgressSource = cruiseModel.serverStatus;
+    final cruiseModel = Cruise.of(context);
+    final userProgressSource = cruiseModel.user;
+    final serverStatusProgressSource = cruiseModel.serverStatus;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
       child: Card(
@@ -34,9 +34,9 @@ abstract class CardRecord extends Record {
           animation: Listenable.merge(<Listenable>[userProgressSource.best, serverStatusProgressSource.best]),
           builder: (BuildContext context, Widget child) {
             final ProgressValue<User> currentUserProgress = userProgressSource.best.value;
-            final AuthenticatedUser currentUser = currentUserProgress is SuccessfulProgress<AuthenticatedUser> ? currentUserProgress.value : null;
-            final ProgressValue<ServerStatus> serverStatusProgress = serverStatusProgressSource.best.value;
-            final ServerStatus serverStatus = serverStatusProgress is SuccessfulProgress<ServerStatus> ? serverStatusProgress.value : const ServerStatus();
+            final currentUser = currentUserProgress is SuccessfulProgress<AuthenticatedUser> ? currentUserProgress.value : null;
+            final serverStatusProgress = serverStatusProgressSource.best.value;
+            final serverStatus = serverStatusProgress is SuccessfulProgress<ServerStatus> ? serverStatusProgress.value : const ServerStatus();
             return buildInterior(context, currentUser, serverStatus);
           },
         ),
@@ -52,8 +52,8 @@ class SeamailListEntry extends CardRecord {
 
   @override
   Widget buildInterior(BuildContext context, AuthenticatedUser currentUser, ServerStatus serverStatus) {
-    final List<Widget> children = <Widget>[];
-    for (SeamailThread thread in threads)
+    final children = <Widget>[];
+    for (var thread in threads)
       children.add(SeamailListTile(thread: thread));
     assert(children.isNotEmpty);
     children.insert(0,
@@ -82,8 +82,8 @@ class UserListEntry extends CardRecord {
 
   @override
   Widget buildInterior(BuildContext context, AuthenticatedUser currentUser, ServerStatus serverStatus) {
-    final List<Widget> children = <Widget>[];
-    for (User user in users) {
+    final children = <Widget>[];
+    for (var user in users) {
       children.add(
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -151,8 +151,8 @@ class ForumListEntry extends CardRecord {
 
   @override
   Widget buildInterior(BuildContext context, AuthenticatedUser currentUser, ServerStatus serverStatus) {
-    final List<Widget> children = <Widget>[];
-    for (ForumThread thread in threads)
+    final children = <Widget>[];
+    for (var thread in threads)
       children.add(ForumListTile(thread: thread));
     assert(children.isNotEmpty);
     children.insert(0,
@@ -177,8 +177,8 @@ class StreamListEntry extends CardRecord {
 
   @override
   Widget buildInterior(BuildContext context, AuthenticatedUser currentUser, ServerStatus serverStatus) {
-    final List<Widget> children = <Widget>[];
-    for (StreamPost post in streamPosts) {
+    final children = <Widget>[];
+    for (var post in streamPosts) {
       children.add(Entry(
         post: post,
         animation: const AlwaysStoppedAnimation<double>(1.0),
@@ -237,11 +237,11 @@ class SearchSearchModel extends SearchModel<Record> {
     _records = Progress.convert<Set<SearchResult>, List<Record>>(
       Cruise.of(context).search(query),
       (Set<SearchResult> results) {
-        final List<SeamailThread> seamailThreads = results.whereType<SeamailThread>().toList()..sort();
-        final List<Event> events = results.whereType<Event>().toList()..sort();
-        final List<User> users = results.whereType<User>().toList()..sort();
-        final List<ForumThread> forumThreads = results.whereType<ForumThread>().toList()..sort();
-        final List<StreamPost> streamPosts = results.whereType<StreamPost>().toList()..sort();
+        final seamailThreads = results.whereType<SeamailThread>().toList()..sort();
+        final events = results.whereType<Event>().toList()..sort();
+        final users = results.whereType<User>().toList()..sort();
+        final forumThreads = results.whereType<ForumThread>().toList()..sort();
+        final streamPosts = results.whereType<StreamPost>().toList()..sort();
         return <Record>[
           if (seamailThreads.isNotEmpty)
             SeamailListEntry(seamailThreads),

@@ -61,7 +61,7 @@ class _LoginDialogState extends State<LoginDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = <Widget>[
+    final children = <Widget>[
       const SizedBox(height: 12.0),
       SizedBox(
         height: 96.0,

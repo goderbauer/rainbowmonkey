@@ -40,7 +40,7 @@ class _DeckPlanViewState extends State<DeckPlanView> with SingleTickerProviderSt
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_currentLevel == null) {
-      final int startingDeck = (PageStorage.of(context).readState(context, identifier: runtimeType) ?? kDefaultDeck) as int;
+      final startingDeck = (PageStorage.of(context).readState(context, identifier: runtimeType) ?? kDefaultDeck) as int;
       _currentLevel = AnimationController(
         value: startingDeck.toDouble(),
         lowerBound: kMinDeck.toDouble(),
@@ -103,7 +103,7 @@ class _DeckPlanViewState extends State<DeckPlanView> with SingleTickerProviderSt
               brightness: Brightness.light,
               child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  final EdgeInsets padding = MediaQuery.of(context).padding;
+                  final padding = MediaQuery.of(context).padding;
                   return PhotoView.customChild(
                     child: Stack(
                       alignment: Alignment.center,
@@ -139,7 +139,7 @@ class _DeckPlanViewState extends State<DeckPlanView> with SingleTickerProviderSt
                       _currentLevel.stop();
                     },
                     onVerticalDragUpdate: (DragUpdateDetails details) {
-                      final RenderBox box = context.findRenderObject() as RenderBox;
+                      final box = context.findRenderObject() as RenderBox;
                       _currentLevel.value -= (details.primaryDelta / box.size.height) * (kMaxDeck - kMinDeck + 1);
                     },
                     onVerticalDragEnd: (DragEndDetails details) {
@@ -188,11 +188,11 @@ class Elevator extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
+    final paint = Paint()
       ..color = Colors.black
       ..strokeWidth = size.width * inset
       ..style = PaintingStyle.stroke;
-    final Rect rect = Rect.fromLTWH(
+    final rect = Rect.fromLTWH(
       size.width * inset,
       size.width * inset + (size.height - size.width) * (1.0 - (level.value - min) / (max - min)),
       size.width * (1 - inset * 2.0),

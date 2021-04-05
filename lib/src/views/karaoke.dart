@@ -14,10 +14,10 @@ class SongSearchModel extends AssetSearchModel<Song> {
   Parser<Song> parser() => _parser;
 
   static List<Song> _parser(String data) {
-    final List<String> lines = data.split('\n');
-    final List<Song> songs = <Song>[];
-    for (String line in lines) {
-      final List<String> parts = line.split('\t');
+    final lines = data.split('\n');
+    final songs = <Song>[];
+    for (var line in lines) {
+      final parts = line.split('\t');
       if (parts.length >= 2)
         songs.add(Song(parts[1], parts[0], parts.length > 2 ? parts[2] : ''));
     }
@@ -147,7 +147,7 @@ class Song extends Record {
 
   @override
   Widget buildSearchResult(BuildContext context) {
-    final TextTheme textStyle = Theme.of(context).textTheme;
+    final textStyle = Theme.of(context).textTheme;
     Widget trailing;
     switch (metadata) {
       case 'M':

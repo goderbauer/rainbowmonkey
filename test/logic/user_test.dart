@@ -4,7 +4,7 @@ import 'package:cruisemonkey/src/models/user.dart';
 
 void main() {
   testWidgets('Credentials model', (WidgetTester tester) async {
-    final Credentials a = Credentials(
+    final a = Credentials(
       username: 'a',
       password: 'b',
       key: 'c',
@@ -14,12 +14,12 @@ void main() {
     expect(a.password, 'b');
     expect(a.key, 'c');
     expect(a.loginTimestamp, DateTime(2000));
-    final Credentials b = a.copyWith();
+    final b = a.copyWith();
     expect(b.username, 'a');
     expect(b.password, 'b');
     expect(b.key, 'c');
     expect(b.loginTimestamp, DateTime(2000));
-    final Credentials c = a.copyWith(
+    final c = a.copyWith(
       username: 'A',
       password: 'B',
       key: 'C',
@@ -31,7 +31,7 @@ void main() {
     expect(c.loginTimestamp, DateTime(2001));
   });
   testWidgets('AuthenticatedUser model', (WidgetTester tester) async {
-    const AuthenticatedUser a = AuthenticatedUser(
+    const a = AuthenticatedUser(
       username: 'u',
       email: 'e',
       role: Role.user,

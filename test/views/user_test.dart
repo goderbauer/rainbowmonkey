@@ -10,12 +10,12 @@ import '../loggers.dart';
 import '../mocks.dart';
 
 void main() {
-  final List<String> log = <String>[];
+  final log = <String>[];
   LoggingTwitarrConfiguration.register(log);
 
   testWidgets('Accounts page', (WidgetTester tester) async {
     log.clear();
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: const LoggingTwitarrConfiguration(0),
       store: TrivialDataStore(log),
       onError: (UserFriendlyError error) { log.add('error: $error'); },

@@ -58,10 +58,10 @@ class Mentions extends ChangeNotifier with BusyMixin {
       return;
     startBusy();
     _updating = true;
-    bool newMentions = false;
+    var newMentions = false;
     try {
-      final MentionsSummary summary = await _twitarr.getMentions(credentials: _credentials).asFuture();
-      final List<MentionsItem> oldList = _currentMentions;
+      final summary = await _twitarr.getMentions(credentials: _credentials).asFuture();
+      final oldList = _currentMentions;
       _currentMentions = <MentionsItem>[]
         ..addAll(summary.forums.map<MentionsItem>((ForumSummary summary) => ForumMentionsItem(_cruise.forums.obtainForum(summary))))
         ..addAll(summary.streamPosts.map<MentionsItem>((StreamMessageSummary summary) => StreamMentionsItem.from(summary, _photoManager)))
@@ -146,7 +146,7 @@ abstract class MentionsItem implements Comparable<MentionsItem> {
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType)
       return false;
-    final MentionsItem typedOther = other as MentionsItem;
+    final typedOther = other as MentionsItem;
     return id == typedOther.id
         && timestamp == typedOther.timestamp;
   }

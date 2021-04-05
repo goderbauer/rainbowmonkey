@@ -79,7 +79,7 @@ void main() {
       showCalendar();
     };
   });
-  final ReceivePort port = ReceivePort()
+  final port = ReceivePort()
     ..forEach((dynamic event) {
       if (event is OpenCalendar) {
         showCalendar();
@@ -114,12 +114,12 @@ void search(BuildContext context, String query) {
 }
 
 void _handleError(UserFriendlyError error) {
-  final String message = '$error';
-  final AnimationController controller = AnimationController(
+  final message = '$error';
+  final controller = AnimationController(
     duration: const Duration(seconds: 4),
     vsync: const PermanentTickerProvider(),
   );
-  final Animation<double> opacity = controller.drive(TweenSequence<double>(
+  final opacity = controller.drive(TweenSequence<double>(
     <TweenSequenceItem<double>>[
       TweenSequenceItem<double>(
         tween: Tween<double>(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.ease)),
@@ -135,12 +135,12 @@ void _handleError(UserFriendlyError error) {
       ),
     ],
   ));
-  final Animation<double> position = controller.drive(
+  final position = controller.drive(
     Tween<double>(begin: 228.0, end: 136.0).chain(CurveTween(curve: Curves.easeOutBack)),
   );
-  final OverlayEntry entry = OverlayEntry(
+  final entry = OverlayEntry(
     builder: (BuildContext context) {
-      final ThemeData theme = Theme.of(context);
+      final theme = Theme.of(context);
       return Positioned(
         left: 24.0,
         right: 24.0,
@@ -162,7 +162,7 @@ void _handleError(UserFriendlyError error) {
       );
     },
   );
-  final OverlayState overlay = Overlay.of(scaffoldKey.currentContext);
+  final overlay = Overlay.of(scaffoldKey.currentContext);
   controller.addListener(() {
     if (overlay.mounted)
       entry.markNeedsBuild();
@@ -242,7 +242,7 @@ class CruiseMonkeyHome extends StatelessWidget {
 
   @protected
   ThemeData makeTheme(Brightness brightness, Color accent) {
-    ThemeData result = ThemeData(
+    var result = ThemeData(
       brightness: brightness,
       primarySwatch: Colors.blue,
       primaryColor: Colors.blue[900],
@@ -287,7 +287,7 @@ class CruiseMonkeyHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return ServerStatusBuilder(
       builder: (BuildContext context, ServerStatus status, Widget child) {
-        final List<View> pages = allPages.where((View view) => view.isEnabled(status)).toList();
+        final pages = allPages.where((View view) => view.isEnabled(status)).toList();
         return DefaultTabController(
           key: ValueKey<int>(pages.length),
           length: pages.length,
@@ -297,12 +297,12 @@ class CruiseMonkeyHome extends StatelessWidget {
             darkTheme: makeTheme(Brightness.dark, Colors.cyanAccent),
             home: Builder(
               builder: (BuildContext context) {
-                final TabController tabController = DefaultTabController.of(context);
-                final ThemeData theme = Theme.of(context);
+                final tabController = DefaultTabController.of(context);
+                final theme = Theme.of(context);
                 return AnimatedBuilder(
                   animation: tabController,
                   builder: (BuildContext context, Widget child) {
-                    final Widget fab = pages[tabController.index].buildFab(context);
+                    final fab = pages[tabController.index].buildFab(context);
                     return Scaffold(
                       key: scaffoldKey,
                       floatingActionButton: fab == null ? null : KeyedSubtree(
@@ -314,9 +314,9 @@ class CruiseMonkeyHome extends StatelessWidget {
                       body: StatusBarBackground(
                         child: LayoutBuilder(
                           builder: (BuildContext context, BoxConstraints constraints) {
-                            const double bottomPadding = 50.0;
-                            final double height = constraints.maxHeight + bottomPadding;
-                            final MediaQueryData metrics = MediaQuery.of(context);
+                            const bottomPadding = 50.0;
+                            final height = constraints.maxHeight + bottomPadding;
+                            final metrics = MediaQuery.of(context);
                             return OverflowBox(
                               minWidth: constraints.maxWidth,
                               maxWidth: constraints.maxWidth,

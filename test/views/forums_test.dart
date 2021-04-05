@@ -51,7 +51,7 @@ class ForumsTwitarr extends LoggingTwitarr {
     @required String threadId,
   }) {
     addLog('getForumThread $threadId');
-    final int index = int.parse(threadId.substring(2)); // generated as 'id$index'
+    final index = int.parse(threadId.substring(2)); // generated as 'id$index'
     return Progress<ForumSummary>.completed(ForumSummary(
       id: threadId,
       subject: 'subject$threadId',
@@ -77,12 +77,12 @@ class ForumsTwitarr extends LoggingTwitarr {
 }
 
 void main() {
-  final List<String> log = <String>[];
+  final log = <String>[];
   LoggingTwitarrConfiguration.register(log);
 
   testWidgets('Forums page', (WidgetTester tester) async {
     log.clear();
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: const ForumsTwitarrConfiguration(0),
       store: TrivialDataStore(log),
       onError: (UserFriendlyError error) { log.add('error: $error'); },
@@ -193,7 +193,7 @@ void main() {
 
   testWidgets('Forum itself', (WidgetTester tester) async {
     log.clear();
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: const ForumsTwitarrConfiguration(0),
       store: TrivialDataStore(log),
       onError: (UserFriendlyError error) { log.add('error: $error'); },

@@ -34,9 +34,9 @@ abstract class TwitarrConfiguration {
   static TwitarrConfiguration from(String serialization, TwitarrConfiguration defaultConfig) {
     if (serialization == null)
       return defaultConfig;
-    final int colon = serialization.indexOf(':');
-    final String prefix = serialization.substring(0, colon);
-    final String settings = serialization.substring(colon + 1);
+    final colon = serialization.indexOf(':');
+    final prefix = serialization.substring(0, colon);
+    final settings = serialization.substring(colon + 1);
     if (!_configurationClasses.containsKey(prefix))
       throw Exception('unknown Twitarr configuration class "$prefix"');
     return _configurationClasses[prefix](settings);

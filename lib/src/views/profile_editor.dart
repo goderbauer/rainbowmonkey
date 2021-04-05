@@ -45,7 +45,7 @@ class _Pending {
 
   void cancelAll() {
     setState(() {
-      for (_PendingTasks task in _tasks)
+      for (var task in _tasks)
         task.cancel();
       _tasks.clear();
     });
@@ -74,13 +74,13 @@ class _ProfileEditorState extends State<ProfileEditor> {
 
   @override
   Widget build(BuildContext context) {
-    final ContinuousProgress<AuthenticatedUser> userSource = Cruise.of(context).user;
+    final userSource = Cruise.of(context).user;
     return Scaffold(
       body: AnimatedBuilder(
         animation: userSource,
         builder: (BuildContext context, Widget child) {
-          final AuthenticatedUser user = userSource.currentValue;
-            final List<Widget> children = <Widget>[
+          final user = userSource.currentValue;
+            final children = <Widget>[
             AvatarEditor(
               user: user,
               pending: _pending,
@@ -187,8 +187,8 @@ class _ProfileEditorState extends State<ProfileEditor> {
               label: const Text('CHANGE PASSWORD'),
             ),
           ];
-          final FocusScopeNode focus = FocusScope.of(context);
-          final bool noFieldHasFocus = focus.focusedChild == null || !focus.focusedChild.hasPrimaryFocus;
+          final focus = FocusScope.of(context);
+          final noFieldHasFocus = focus.focusedChild == null || !focus.focusedChild.hasPrimaryFocus;
           return StatusBarBackground(
             child: CustomScrollView(
               slivers: <Widget>[
@@ -266,9 +266,9 @@ class _AvatarEditorState extends State<AvatarEditor> with AutomaticKeepAliveClie
     try {
       setState(() { _busy = true; _error = ''; });
       widget.pending?.add(this);
-      final File file = await ImagePicker.pickImage(source: source);
+      final file = await ImagePicker.pickImage(source: source);
       if (file != null) {
-        final Uint8List bytes = await file.readAsBytes();
+        final bytes = await file.readAsBytes();
         try {
           await Cruise.of(context).uploadAvatar(image: bytes).asFuture();
         } on UserFriendlyError catch (error) {
@@ -306,7 +306,7 @@ class _AvatarEditorState extends State<AvatarEditor> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final ThemeData themeData = Theme.of(context);
+    final themeData = Theme.of(context);
     return Column(
       children: <Widget>[
         Stack(
@@ -428,7 +428,7 @@ class _ProfileFieldState extends State<ProfileField> with AutomaticKeepAliveClie
   void _save() async {
     if (_field.text == _currentlyUploadingValue)
       return;
-    final String ourValue = _currentlyUploadingValue = _field.text;
+    final ourValue = _currentlyUploadingValue = _field.text;
     widget.pending?.add(this); // may be redundant
     setState(() { _saved = false; _error = null; });
     try {
@@ -571,7 +571,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> children = <Widget>[
+    final children = <Widget>[
       SizedBox(
         height: 96.0,
         child: TextFormField(

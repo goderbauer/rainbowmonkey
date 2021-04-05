@@ -62,7 +62,7 @@ abstract class AssetSearchModel<T extends Record> extends SearchModel<T> {
 
   @override
   Future<void> attached() async {
-    final AssetBundle newBundle = DefaultAssetBundle.of(context);
+    final newBundle = DefaultAssetBundle.of(context);
     _bundle ??= newBundle;
     // TODO(ianh): This doesn't support handling the case of the asset bundle
     // changing, since we only run it once even if the bundle is different.
@@ -77,7 +77,7 @@ abstract class AssetSearchModel<T extends Record> extends SearchModel<T> {
 
   @visibleForTesting
   Progress<List<T>> initFromBundle(AssetBundle bundle) {
-    final Future<List<T>> parsedData = bundle.loadStructuredData<List<T>>(
+    final parsedData = bundle.loadStructuredData<List<T>>(
       resourceName,
       (String data) => compute<String, List<T>>(parser(), data),
     );
@@ -110,7 +110,7 @@ abstract class AssetSearchModel<T extends Record> extends SearchModel<T> {
     if (query.isEmpty) {
       _filteredRecords = null;
     } else {
-      final List<String> keywords = query.toLowerCase().split(' ');
+      final keywords = query.toLowerCase().split(' ');
       _filteredRecords = Progress.convert<List<T>, List<T>>(
         _records,
         (List<T> list) => list.where((T value) => matches(value, keywords)).toList(),
@@ -194,11 +194,11 @@ class _SearchableListViewState<T extends Record> extends State<SearchableListVie
     }
     _updateQueryNotifier();
     if (_new) {
-      final String pushedQuery = _searchQueryNotifier?.pullQuery(tentative: true);
+      final pushedQuery = _searchQueryNotifier?.pullQuery(tentative: true);
       if (pushedQuery != null) {
         _textEditingController.value = TextEditingValue(text: pushedQuery);
       } else {
-        final TextEditingValue keptValue = PageStorage.of(context).readState(context, identifier: widget.searchModel) as TextEditingValue;
+        final keptValue = PageStorage.of(context).readState(context, identifier: widget.searchModel) as TextEditingValue;
         if (keptValue != null)
           _textEditingController.value = keptValue;
       }
@@ -217,7 +217,7 @@ class _SearchableListViewState<T extends Record> extends State<SearchableListVie
   }
 
   void _updateQueryNotifier() {
-    final SearchQueryNotifier newQueryNotifier = widget.searchModel.searchQueryNotifier;
+    final newQueryNotifier = widget.searchModel.searchQueryNotifier;
     if (newQueryNotifier != _searchQueryNotifier) {
       _searchQueryNotifier?.removeListener(_updateQuery);
       _searchQueryNotifier = newQueryNotifier;
@@ -235,14 +235,14 @@ class _SearchableListViewState<T extends Record> extends State<SearchableListVie
 
   void _updateQuery() {
     assert(_searchQueryNotifier != null);
-    final String newQuery = _searchQueryNotifier.pullQuery().trim();
+    final newQuery = _searchQueryNotifier.pullQuery().trim();
     if (newQuery != _textEditingController.value.text.trim())
       _textEditingController.value = TextEditingValue(text: newQuery);
   }
 
   void _storeTextField() {
     setState(() {
-      final String newQuery = _textEditingController.value.text.trim();
+      final newQuery = _textEditingController.value.text.trim();
       if (_query != newQuery) {
         _query = newQuery;
         widget.searchModel.search(_query);
@@ -264,7 +264,7 @@ class _SearchableListViewState<T extends Record> extends State<SearchableListVie
 
   @override
   Widget build(BuildContext context) {
-    final EdgeInsets outerPadding = MediaQuery.of(context).padding;
+    final outerPadding = MediaQuery.of(context).padding;
     return Column(
       verticalDirection: VerticalDirection.up,
       children: <Widget>[

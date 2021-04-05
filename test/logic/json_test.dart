@@ -4,7 +4,7 @@ import 'package:cruisemonkey/src/json.dart';
 
 void main() {
   testWidgets('Json', (WidgetTester tester) async {
-    final Json a = Json.parse('1');
+    final a = Json.parse('1');
     expect(a == 1, isTrue); // ignore: unrelated_type_equality_checks
     expect(a != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(a == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -18,7 +18,7 @@ void main() {
     expect(a.toString(), '1.0');
     expect(a.toJson(), '1.0');
 
-    final Json b = Json.parse('0');
+    final b = Json.parse('0');
     expect(b == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(b != 0, isFalse); // ignore: unrelated_type_equality_checks
     expect(b == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -32,7 +32,7 @@ void main() {
     expect(b.toString(), '0.0');
     expect(b.toJson(), '0.0');
 
-    final Json c = Json.parse('"1"');
+    final c = Json.parse('"1"');
     expect(c == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(c != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(c == '1', isTrue); // ignore: unrelated_type_equality_checks
@@ -44,7 +44,7 @@ void main() {
     expect(c.toString(), '1');
     expect(c.toJson(), '"1"');
 
-    final Json d = Json.parse('true');
+    final d = Json.parse('true');
     expect(d == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(d != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(d == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -57,7 +57,7 @@ void main() {
     expect(d.toString(), 'true');
     expect(d.toJson(), 'true');
 
-    final Json e = Json.parse('false');
+    final e = Json.parse('false');
     expect(e == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(e != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(e == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -70,7 +70,7 @@ void main() {
     expect(e.toString(), 'false');
     expect(e.toJson(), 'false');
 
-    final Json f = Json.parse('[1, 2]');
+    final f = Json.parse('[1, 2]');
     expect(f == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(f != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(f == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -87,7 +87,7 @@ void main() {
     expect(f.valueType, <Json>[].runtimeType);
     expect(f.toJson(), '[1.0,2.0]');
 
-    final Json g = Json.parse('{"1": "a", "2": "b"}');
+    final g = Json.parse('{"1": "a", "2": "b"}');
     expect(g == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(g != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(g == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -107,7 +107,7 @@ void main() {
     expect(g.valueType, <String, Json>{}.runtimeType);
     expect(g.toJson(), '{"1":"a","2":"b"}');
 
-    final Json h = Json(g);
+    final h = Json(g);
     expect(h == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(h != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(h == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -127,7 +127,7 @@ void main() {
     expect(h.valueType, g.valueType);
     expect(h.toJson(), '{"1":"a","2":"b"}');
 
-    final Json i = Json.map(const <String, String>{'1': 'a', '2': 'b'});
+    final i = Json.map(const <String, String>{'1': 'a', '2': 'b'});
     expect(i == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(i != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(i == '1', isFalse); // ignore: unrelated_type_equality_checks
@@ -160,7 +160,7 @@ void main() {
     (g as dynamic).doo = 99;
     expect(g.toMap(), <String, dynamic>{'1': 'a', '2': 'b', 'foo': 98.0, 'doo': 99.0});
 
-    final Json j = Json.list(<int>[1, 2]);
+    final j = Json.list(<int>[1, 2]);
     expect(j == 1, isFalse); // ignore: unrelated_type_equality_checks
     expect(j != 0, isTrue); // ignore: unrelated_type_equality_checks
     expect(j == '1', isFalse); // ignore: unrelated_type_equality_checks

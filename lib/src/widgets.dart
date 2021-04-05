@@ -32,7 +32,7 @@ class Cruise extends InheritedNotifier<CruiseModel> {
   }) : super(key: key, child: child, notifier: cruiseModel);
 
   static CruiseModel of(BuildContext context) {
-    final Cruise widget = context.dependOnInheritedWidgetOfExactType<Cruise>();
+    final widget = context.dependOnInheritedWidgetOfExactType<Cruise>();
     return widget?.notifier;
   }
 }
@@ -45,7 +45,7 @@ typedef Widget FadeWrapperBuilder(BuildContext context, Widget child);
 
 String wrapError(Exception error) {
   if (error is SocketException) {
-    final SocketException e = error;
+    final e = error;
     if (e.osError.errorCode == 113)
       return 'Cannot reach server (${e.address.host}:${e.port}).';
     if (e.osError.errorCode == 101)
@@ -163,7 +163,7 @@ class ProgressBuilder<T> extends StatelessWidget {
 
   static Widget defaultFailedBuilder(BuildContext context, Exception error, StackTrace stackTrace, { VoidCallback onRetry, Widget failureMessage }) {
     assert(error != null);
-    final Widget message = iconAndLabel(key: ProgressBuilder.failedKey, icon: Icons.warning, message: wrapError(error));
+    final message = iconAndLabel(key: ProgressBuilder.failedKey, icon: Icons.warning, message: wrapError(error));
     if (onRetry == null)
       return message;
     return Center(
@@ -491,7 +491,7 @@ class Now extends InheritedNotifier<ValueNotifier<DateTime>> {
   );
 
   static DateTime of(BuildContext context) {
-    final Now now = context.dependOnInheritedWidgetOfExactType<Now>();
+    final now = context.dependOnInheritedWidgetOfExactType<Now>();
     assert(now != null);
     return now.notifier.value;
   }
@@ -611,7 +611,7 @@ class _ChatLineState extends State<ChatLine> {
   }
 
   void _viewLikes() {
-    final Progress<Set<User>> progress = widget.getLikesCallback();
+    final progress = widget.getLikesCallback();
     Navigator.push(
       context,
       MaterialPageRoute<void>(
@@ -625,11 +625,11 @@ class _ChatLineState extends State<ChatLine> {
               builder: (BuildContext context, Set<User> users) {
                 return ServerStatusBuilder(
                   builder: (BuildContext context, ServerStatus status, Widget child) {
-                    final List<User> sortedUsers = users.toList()..sort();
+                    final sortedUsers = users.toList()..sort();
                     return ListView.builder(
                       itemCount: sortedUsers.length,
                       itemBuilder: (BuildContext context, int index) {
-                        final User user = sortedUsers[index];
+                        final user = sortedUsers[index];
                         return ListTile(
                           key: ValueKey<String>(user.username),
                           leading: Cruise.of(context).avatarFor(<User>[user]),
@@ -657,7 +657,7 @@ class _ChatLineState extends State<ChatLine> {
   }
 
   void _handleLongPress() async {
-    final List<Widget> actions = <Widget>[];
+    final actions = <Widget>[];
     void action(String label, IconData icon, VoidCallback callback) {
       if (callback != null) {
         actions.add(LabeledIconButton(label: Text(label), icon: Icon(icon), center: false, onPressed: () {
@@ -675,13 +675,13 @@ class _ChatLineState extends State<ChatLine> {
     action('LOCK', Icons.lock_outline, widget.onLock);
     action('UNLOCK', Icons.lock_open, widget.onUnlock);
     action('DELETE', Icons.delete_forever, widget.onDelete);
-    final List<Widget> children = <Widget>[
+    final children = <Widget>[
       Text('Posted by: ${widget.user}'),
       Text('Timestamp: ${widget.timestamp}'),
     ];
     if (widget.allUsers != null && widget.readUsers != null) {
-      final List<User> users = widget.allUsers.values.toList();
-      final CruiseModel cruise = Cruise.of(context);
+      final users = widget.allUsers.values.toList();
+      final cruise = Cruise.of(context);
       children.addAll(<Widget>[
         const Divider(),
         Wrap(
@@ -692,7 +692,7 @@ class _ChatLineState extends State<ChatLine> {
           children: <Widget>[
             const Text('Read by:'),
             ...users.map((User user) {
-              final bool read = widget.readUsers.contains(user.username);
+              final read = widget.readUsers.contains(user.username);
               return Opacity(
                 opacity: read ? 1.0 : 0.1,
                 child: cruise.avatarFor(<User>[user]),
@@ -740,8 +740,8 @@ class _ChatLineState extends State<ChatLine> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> lines = <Widget>[];
-    final ThemeData theme = Theme.of(context);
+    final lines = <Widget>[];
+    final theme = Theme.of(context);
     Color lightColor;
     switch (theme.brightness) {
       case Brightness.light:
@@ -751,17 +751,17 @@ class _ChatLineState extends State<ChatLine> {
         lightColor = Colors.grey.shade400;
         break;
     }
-    final TextStyle body1Style = theme.primaryTextTheme.bodyText2;
-    for (TwitarrString message in widget.messages)
+    final body1Style = theme.primaryTextTheme.bodyText2;
+    for (var message in widget.messages)
       lines.add(PrettyText(message));
     if (widget.photos != null) {
-      for (Photo photo in widget.photos) {
+      for (var photo in widget.photos) {
         lines.add(PhotoImage(tag: '${widget.id}:${photo.id}', photo: photo));
       }
     }
-    final TextDirection direction = widget.isCurrentUser ? TextDirection.rtl : TextDirection.ltr;
-    final DateTime now = Now.of(context);
-    final List<String> metadata = <String>[];
+    final direction = widget.isCurrentUser ? TextDirection.rtl : TextDirection.ltr;
+    final now = Now.of(context);
+    final metadata = <String>[];
     if (!widget.isCurrentUser)
       metadata.add('${widget.user}');
     metadata.add('${prettyDuration(now.difference(widget.timestamp))}');
@@ -773,8 +773,8 @@ class _ChatLineState extends State<ChatLine> {
     if (widget.isReply)
       metadata.add('threaded reply');
     if (widget.allUsers != null && widget.readUsers != null) {
-      final bool unread = widget.currentUser != null && !widget.readUsers.contains(widget.currentUser.effectiveUser.username);
-      final int readCount = widget.readUsers.length + (unread ? 1 : 0);
+      final unread = widget.currentUser != null && !widget.readUsers.contains(widget.currentUser.effectiveUser.username);
+      final readCount = widget.readUsers.length + (unread ? 1 : 0);
       if (widget.allUsers.length > readCount)
         metadata.add('read by $readCount of ${widget.allUsers.length}');
       if (unread)
@@ -907,7 +907,7 @@ class ProgressChatLine extends StatelessWidget {
         } else {
           leading = const Icon(Icons.error, size: 40.0, color: Colors.purple);
         }
-        String title = text;
+        var title = text;
         if (photos != null && photos.isNotEmpty)
           title += ' (+${photos.length} image${ photos.length == 1 ? "" : "s"})';
         return ListTile(
@@ -958,8 +958,8 @@ class RenderChatBody extends RenderBox
   void performLayout() {
     _mainAxisExtent = 0.0;
     _crossAxisExtent = 0.0;
-    final BoxConstraints childConstraints = constraints.loosen();
-    RenderBox child = firstChild;
+    final childConstraints = constraints.loosen();
+    var child = firstChild;
     while (child != null) {
       child.layout(childConstraints, parentUsesSize: true);
       _mainAxisExtent += child.size.height;
@@ -998,11 +998,11 @@ class RenderChatBody extends RenderBox
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    RenderBox child = firstChild;
-    double y = (1 + alignment.y) * (size.height - _mainAxisExtent) / 2.0;
+    var child = firstChild;
+    var y = (1 + alignment.y) * (size.height - _mainAxisExtent) / 2.0;
     while (child != null) {
-      final double x = (1 + alignment.x) * (size.width - child.size.width) / 2.0;
-      final ChatBodyParentData childParentData = child.parentData as ChatBodyParentData;
+      final x = (1 + alignment.x) * (size.width - child.size.width) / 2.0;
+      final childParentData = child.parentData as ChatBodyParentData;
       childParentData.offset = Offset(x, y);
       context.paintChild(child, childParentData.offset + offset);
       y += child.size.height;
@@ -1179,7 +1179,7 @@ class _ServerTextViewState extends State<ServerTextView> {
   @override
   Widget build(BuildContext context) {
     assert(_serverText != null);
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 20.0),
@@ -1240,16 +1240,16 @@ class _ServerTextViewState extends State<ServerTextView> {
 Widget createAvatarWidgetsFor(List<User> sortedUsers, List<Color> colors, List<ImageProvider> images, { double size, bool enabled = true }) {
   switch (sortedUsers.length) {
     case 1:
-      final User user = sortedUsers.single;
-      final String name = user.displayName ?? user.username;
-      List<String> names = name.split(RegExp(r'[^A-Z]+')).where((String value) => value.isNotEmpty).toList();
+      final user = sortedUsers.single;
+      final name = user.displayName ?? user.username;
+      var names = name.split(RegExp(r'[^A-Z]+')).where((String value) => value.isNotEmpty).toList();
       if (names.isEmpty)
         names = name.split(' ');
-      bool pressed = false;
+      var pressed = false;
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
-          final ThemeData theme = Theme.of(context);
-          TextStyle textStyle = theme.primaryTextTheme.subtitle1;
+          final theme = Theme.of(context);
+          var textStyle = theme.primaryTextTheme.subtitle1;
           switch (ThemeData.estimateBrightnessForColor(colors.single)) {
             case Brightness.dark:
               textStyle = textStyle.copyWith(color: theme.primaryColorLight);
@@ -1663,13 +1663,13 @@ class PhotoImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CruiseModel cruise = Cruise.of(context);
-    final MediaQueryData metrics = MediaQuery.of(context);
-    final double maxHeight = math.min(
+    final cruise = Cruise.of(context);
+    final metrics = MediaQuery.of(context);
+    final maxHeight = math.min(
       metrics.size.height - metrics.padding.vertical - (56.0 * 3.0),
       photo.mediumSize.height / metrics.devicePixelRatio,
     );
-    final ImageProvider thumbnail = cruise.imageFor(
+    final thumbnail = cruise.imageFor(
       photo,
       thumbnail: true,
     );
@@ -1683,7 +1683,7 @@ class PhotoImage extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
             child: GestureDetector(
               onTap: () {
-                bool appBarVisible = false;
+                var appBarVisible = false;
                 Navigator.push<void>(context, MaterialPageRoute<void>(
                   builder: (BuildContext context) {
                     return StatefulBuilder(
@@ -1740,10 +1740,10 @@ class PhotoImage extends StatelessWidget {
                                         icon: const Icon(Icons.cloud_download),
                                         tooltip: 'Download image to device',
                                         onPressed: () async {
-                                          final Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler()
+                                          final permissions = await PermissionHandler()
                                             .requestPermissions(<PermissionGroup>[PermissionGroup.storage]);
                                           if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
-                                            final Uint8List data = await ProgressDialog.show<Uint8List>(
+                                            final data = await ProgressDialog.show<Uint8List>(
                                               context,
                                               cruise.imageBytesFor(photo),
                                             );
@@ -1852,10 +1852,10 @@ class ModeratorBuilder extends StatelessWidget {
     return ValueListenableBuilder<ProgressValue<AuthenticatedUser>>(
       valueListenable: Cruise.of(context).user.best,
       builder: (BuildContext context, ProgressValue<AuthenticatedUser> userProgress, Widget child) {
-        final AuthenticatedUser user = userProgress is SuccessfulProgress<AuthenticatedUser> ? userProgress.value : null;
-        final bool canModerate = user != null && user.canModerate;
-        final bool isModerating = user != null && user.isModerating;
-        Widget result = builder(context, user, canModerate, isModerating);
+        final user = userProgress is SuccessfulProgress<AuthenticatedUser> ? userProgress.value : null;
+        final canModerate = user != null && user.canModerate;
+        final isModerating = user != null && user.isModerating;
+        var result = builder(context, user, canModerate, isModerating);
         if (includeBorder) {
           result = ModeratorBorder(
             isModerating: isModerating,
@@ -1942,12 +1942,12 @@ class ServerStatusBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ContinuousProgress<ServerStatus> serverStatus = Cruise.of(context).serverStatus;
+    final serverStatus = Cruise.of(context).serverStatus;
     return AnimatedBuilder(
       animation: serverStatus,
       child: child,
       builder: (BuildContext context, Widget child) {
-        final ServerStatus status = serverStatus.currentValue ?? const ServerStatus();
+        final status = serverStatus.currentValue ?? const ServerStatus();
         return builder(context, status, child);
       },
     );
@@ -1985,9 +1985,9 @@ class _JumpToTopState extends State<JumpToTop> {
           AnimatedBuilder(
             animation: _controller,
             builder: (BuildContext context, Widget child) {
-              final double position = _controller.position.pixels;
-              final EdgeInsets padding = MediaQuery.of(context).padding;
-              final bool showIt = position > constraints.maxHeight / 3.0;
+              final position = _controller.position.pixels;
+              final padding = MediaQuery.of(context).padding;
+              final showIt = position > constraints.maxHeight / 3.0;
               return PositionedDirectional(
                 end: 24.0,
                 top: padding.top + 16.0,
@@ -2026,7 +2026,7 @@ class StatusBarBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Brightness effectiveBrightness = brightness ?? MediaQuery.of(context).platformBrightness;
+    final effectiveBrightness = brightness ?? MediaQuery.of(context).platformBrightness;
     SystemUiOverlayStyle overlayStyle;
     switch (effectiveBrightness) {
       case Brightness.dark: overlayStyle = SystemUiOverlayStyle.light; break;

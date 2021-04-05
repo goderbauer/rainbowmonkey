@@ -75,7 +75,7 @@ class Calendar {
   List<Event> get events => _events;
 
   Iterable<Event> upcoming(DateTime serverTime, Duration window) sync* {
-    for (Event event in events) {
+    for (var event in events) {
       if (event.following && event.startsDuring(serverTime, serverTime.add(window)))
         yield event;
     }
@@ -86,8 +86,8 @@ class Calendar {
       return '${time.hour.toString().padLeft(2, "0")}:${time.minute.toString().padLeft(2, "0")}';
     if (time.hour == 12 && time.minute == 00)
       return '12:00nn';
-    final String minute = time.minute.toString().padLeft(2, '0');
-    final String suffix = time.hour < 12 ? 'am' : 'pm';
+    final minute = time.minute.toString().padLeft(2, '0');
+    final suffix = time.hour < 12 ? 'am' : 'pm';
     if (time.hour == 00 || time.hour == 12)
       return '12:$minute$suffix';
     return '${(time.hour % 12).toString()}:$minute$suffix';

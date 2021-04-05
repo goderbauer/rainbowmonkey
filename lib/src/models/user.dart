@@ -186,7 +186,7 @@ class User extends SearchResult implements Comparable<User> {
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType)
       return false;
-    final User typedOther = other as User;
+    final typedOther = other as User;
     return username == typedOther.username
         && displayName == typedOther.displayName
         && realName == typedOther.realName

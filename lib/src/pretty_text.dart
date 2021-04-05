@@ -70,16 +70,16 @@ class _PrettyTextState extends State<PrettyText> {
   }
 
   List<_Part> _tokenize(TwitarrString input) {
-    final String text = input.encodedValue;
-    final List<_Part> result = <_Part>[];
+    final text = input.encodedValue;
+    final result = <_Part>[];
     if (widget.prefix != null)
       result.add(_TextPart(widget.prefix));
     text.splitMapJoin(
       _tokenizerPattern,
       onMatch: (Match rawMatch) {
-        final RegExpMatch match = rawMatch as RegExpMatch;
-        final String type = match.groupNames.where((String name) => match.namedGroup(name) != null).single;
-        final String value = match.namedGroup(type);
+        final match = rawMatch as RegExpMatch;
+        final type = match.groupNames.where((String name) => match.namedGroup(name) != null).single;
+        final value = match.namedGroup(type);
         switch (type) {
           case 'EMOJI':
             result.add(_EmojiPart(value));
@@ -119,7 +119,7 @@ class _PrettyTextState extends State<PrettyText> {
   }
 
   void _disposeParts() {
-    for (_Part part in _parts)
+    for (var part in _parts)
       part.dispose();
     _parts = null;
     _widget = null;
@@ -171,12 +171,12 @@ class _EmojiPart extends _Part {
 
   @override
   InlineSpan build(BuildContext context) {
-    final double height = DefaultTextStyle.of(context).style.fontSize;
+    final height = DefaultTextStyle.of(context).style.fontSize;
     return WidgetSpan(child: Image.asset(_path, height: height));
   }
 
   Widget buildSpecial(BuildContext context) {
-    final double height = DefaultTextStyle.of(context).style.fontSize;
+    final height = DefaultTextStyle.of(context).style.fontSize;
     return Padding(
       padding: const EdgeInsets.all(2),
       child: Image.asset(_path, height: height * 2.0),
@@ -229,9 +229,9 @@ abstract class _TappablePart extends _Part {
 
   @override
   InlineSpan build(BuildContext context) {
-    TextStyle currentStyle = style;
+    var currentStyle = style;
     if (_down) {
-      final Color highlightColor = Theme.of(context).colorScheme.secondary;
+      final highlightColor = Theme.of(context).colorScheme.secondary;
       currentStyle = currentStyle.copyWith(color: highlightColor);
     }
     return TextSpan(text: text, style: currentStyle, recognizer: _recognizer);
@@ -260,7 +260,7 @@ class _LinkPart extends _TappablePart {
   void handleTap() {
     String url;
     if (link.startsWith(_schemePattern)) {
-      final int colon = link.indexOf(':');
+      final colon = link.indexOf(':');
       url = link.substring(0, colon).toLowerCase() + link.substring(colon);
     } else {
       url = 'http://$link';

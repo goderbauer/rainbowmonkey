@@ -61,14 +61,14 @@ class WaveShape extends NotchedShape {
 
   @override
   Path getOuterPath(Rect host, Rect guest) {
-    const double waveDiameter = 50.0;
-    const double waveHeight = 13.0;
-    const double waveWidth = 43.0;
+    const waveDiameter = 50.0;
+    const waveHeight = 13.0;
+    const waveWidth = 43.0;
 
-    final double phaseOffset = ((host.width - waveWidth) / 2.0) % waveWidth;
+    final phaseOffset = ((host.width - waveWidth) / 2.0) % waveWidth;
 
-    final Path circles = Path();
-    double left = host.left - phaseOffset;
+    final circles = Path();
+    var left = host.left - phaseOffset;
     while (left < host.right) {
       circles.addOval(
         Rect.fromCircle(
@@ -78,7 +78,7 @@ class WaveShape extends NotchedShape {
       );
       left += waveWidth;
     }
-    final Path waves = Path.combine(PathOperation.difference, Path()..addRect(host), circles);
+    final waves = Path.combine(PathOperation.difference, Path()..addRect(host), circles);
 
     if (guest != null)
       return Path.combine(PathOperation.difference, waves, Path()..addOval(guest.inflate(guest.width * 0.05)));
@@ -125,8 +125,8 @@ class _ShipPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     assert(size == shipSize);
-    final Path path = ship();
-    final Paint paint = Paint()
+    final path = ship();
+    final paint = Paint()
       ..color = color;
     canvas.drawPath(path, paint);
   }

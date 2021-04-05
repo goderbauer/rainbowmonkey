@@ -23,8 +23,8 @@ typedef ThreadReadCallback = void Function(String threadId);
 /// reentrantly; if it does, the future will complete with an error.
 Future<T> valueListenableToFutureAdapter<T>(ValueListenable<T> listenable, ValuePredicateCallback<T> predicate) {
   assert(predicate != null);
-  final Completer<T> completer = Completer<T>();
-  bool handling = false;
+  final completer = Completer<T>();
+  var handling = false;
   void listener() {
     if (handling && !completer.isCompleted) {
       listenable.removeListener(listener);
@@ -38,7 +38,7 @@ Future<T> valueListenableToFutureAdapter<T>(ValueListenable<T> listenable, Value
     }
     try {
       handling = true;
-      final T value = listenable.value;
+      final value = listenable.value;
       if (predicate(value) && !completer.isCompleted) {
         completer.complete(value);
         listenable.removeListener(listener);
@@ -224,7 +224,7 @@ class VariableTimer {
         _currentPeriod = minDuration;
         return;
       case _VariableTimerState.enabled:
-        final Duration elapsed = _stopwatch.elapsed;
+        final elapsed = _stopwatch.elapsed;
         if (elapsed >= minDuration) {
           _timer.cancel();
           _timer = null;
@@ -269,15 +269,15 @@ class VariableTimer {
 
 String prettyDuration(Duration duration, { bool short = false }) {
   assert(short != null);
-  final int microseconds = duration.inMicroseconds;
-  double minutes = microseconds / (1000 * 1000 * 60);
+  final microseconds = duration.inMicroseconds;
+  var minutes = microseconds / (1000 * 1000 * 60);
   if (minutes < 0.9)
     return short ? 'now' : 'just now';
   if (minutes < 1.5)
     return short ? '1 min ago' : '1 minute ago';
   if (minutes < 59.5)
     return '${minutes.round()} ${short ? 'min' : 'minutes'} ago';
-  double hours = microseconds / (1000 * 1000 * 60 * 60);
+  var hours = microseconds / (1000 * 1000 * 60 * 60);
   minutes -= hours.truncate() * 60;
   if (hours < 2 && (minutes < 5 || (minutes < 30 && short)))
     return '1 hour ago';
@@ -289,13 +289,13 @@ String prettyDuration(Duration duration, { bool short = false }) {
     return '${hours.round()}½ hours ago';
   if (hours < 23)
     return '${hours.round()} hours ago';
-  double days = microseconds / (1000 * 1000 * 60 * 60 * 24);
+  var days = microseconds / (1000 * 1000 * 60 * 60 * 24);
   hours -= days.truncate() * 24;
   if (days < 1.5)
     return '1 day ago';
   if (days < 10.5)
     return '${days.round()} days ago';
-  final double weeks = microseconds / (1000 * 1000 * 60 * 60 * 24 * 7);
+  final weeks = microseconds / (1000 * 1000 * 60 * 60 * 24 * 7);
   days -= weeks.truncate() * 7;
   if (weeks < 1.5)
     return '1 week ago';

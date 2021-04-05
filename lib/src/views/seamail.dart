@@ -65,8 +65,8 @@ class _SeamailThreadViewState extends State<SeamailThreadView> {
   }
 
   void _submitMessage(String value) {
-    final Progress<void> progress = widget.thread.send(value);
-    final _PendingSend entry = _PendingSend(progress, value);
+    final progress = widget.thread.send(value);
+    final entry = _PendingSend(progress, value);
     setState(() {
       _pending.add(entry);
       progress.asFuture().then((void value) {
@@ -92,15 +92,15 @@ class _SeamailThreadViewState extends State<SeamailThreadView> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextStyle appBarTitleTextStyle = theme.primaryTextTheme.bodyText2.apply(fontSizeFactor: 0.8);
-    final CruiseModel cruise = Cruise.of(context);
-    final List<User> users = widget.thread.users.toList();
-    final List<SeamailMessage> messages = widget.thread.getMessages() ?? const <SeamailMessage>[];
-    final List<MessageBubble> bubbles = <MessageBubble>[];
-    MessageBubble currentBubble = MessageBubble();
-    SeamailMessage lastMessage = const SeamailMessage(user: User.none());
-    for (SeamailMessage message in messages) {
+    final theme = Theme.of(context);
+    final appBarTitleTextStyle = theme.primaryTextTheme.bodyText2.apply(fontSizeFactor: 0.8);
+    final cruise = Cruise.of(context);
+    final users = widget.thread.users.toList();
+    final messages = widget.thread.getMessages() ?? const <SeamailMessage>[];
+    final bubbles = <MessageBubble>[];
+    var currentBubble = MessageBubble();
+    var lastMessage = const SeamailMessage(user: User.none());
+    for (var message in messages) {
       if (!message.user.sameAs(lastMessage.user) ||
           message.timestamp.difference(lastMessage.timestamp) > const Duration(minutes: 2)) {
         currentBubble = MessageBubble(user: message.user);
@@ -118,7 +118,7 @@ class _SeamailThreadViewState extends State<SeamailThreadView> {
               Expanded(
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    final double height = constraints.maxHeight;
+                    final height = constraints.maxHeight;
                     return SizedBox(
                       width: (users.length + 1) * height / 2.0,
                       child: Stack(
@@ -226,8 +226,8 @@ class _SeamailThreadViewState extends State<SeamailThreadView> {
                           ),
                         );
                       }
-                      final int bubbleIndex = bubbles.length - (index + 1);
-                      final MessageBubble bubble = bubbles[bubbleIndex];
+                      final bubbleIndex = bubbles.length - (index + 1);
+                      final bubble = bubbles[bubbleIndex];
                       return ChatLine(
                         key: ValueKey<int>(bubbleIndex),
                         user: bubble.user,
@@ -401,8 +401,8 @@ class _StartSeamailViewState extends State<StartSeamailView> {
   }
 
   String get _defaultSubject {
-    final List<String> names = <String>[];
-    for (User user in _users) {
+    final names = <String>[];
+    for (var user in _users) {
       if (user.displayName != null && user.displayName != '') {
         names.add(user.displayName.split(' ').first);
       } else {
@@ -415,7 +415,7 @@ class _StartSeamailViewState extends State<StartSeamailView> {
       return _applyMaxSubjectLength(names.single);
     if (names.length == 2)
       return _applyMaxSubjectLength(names.join(' and '));
-    final String last = names.removeLast();
+    final last = names.removeLast();
     return _applyMaxSubjectLength('${names.join(", ")}, and $last');
   }
 
@@ -429,12 +429,12 @@ class _StartSeamailViewState extends State<StartSeamailView> {
         ? FloatingActionButton(
             child: const Icon(Icons.send),
             onPressed: () async {
-              final Progress<SeamailThread> progress = Cruise.of(context).seamail.postThread(
+              final progress = Cruise.of(context).seamail.postThread(
                 users: _users,
                 subject: _subject.text.isNotEmpty ? _subject.text : _defaultSubject,
                 text: _text.text,
               );
-              final SeamailThread thread = await ProgressDialog.show<SeamailThread>(context, progress);
+              final thread = await ProgressDialog.show<SeamailThread>(context, progress);
               if (mounted && thread != null)
                 Navigator.pop(context, thread);
             },
@@ -530,7 +530,7 @@ class _StartSeamailViewState extends State<StartSeamailView> {
                     },
                     builder: (BuildContext context, List<User> users) {
                       assert(users != null);
-                      final Iterable<User> filteredUsers = users.where(_shouldShowUser);
+                      final filteredUsers = users.where(_shouldShowUser);
                       if (filteredUsers.isEmpty) {
                         return SliverToBoxAdapter(
                           child: Padding(

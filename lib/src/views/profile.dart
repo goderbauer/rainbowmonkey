@@ -31,7 +31,7 @@ class _ProfileState extends State<Profile> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final CruiseModel newCruise = Cruise.of(context);
+    final newCruise = Cruise.of(context);
     if (newCruise != _cruise) {
       _cruise?.removeListener(_start);
       _cruise = newCruise;
@@ -54,8 +54,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final ContinuousProgress<AuthenticatedUser> userProgress = Cruise.of(context).user;
-    final ContinuousProgress<ServerStatus> serverStatusProgress = Cruise.of(context).serverStatus;
+    final userProgress = Cruise.of(context).user;
+    final serverStatusProgress = Cruise.of(context).serverStatus;
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.user}'),
@@ -64,17 +64,17 @@ class _ProfileState extends State<Profile> {
         animation: Listenable.merge(<Listenable>[userProgress.best, serverStatusProgress.best]),
         builder: (BuildContext context, Widget child) {
           final User currentUser = userProgress.currentValue;
-          final ServerStatus status = serverStatusProgress.currentValue ?? const ServerStatus();
+          final status = serverStatusProgress.currentValue ?? const ServerStatus();
           return ProgressBuilder<User>(
             progress: _user,
             onRetry: () {
               setState(_start);
             },
             builder: (BuildContext context, User user) {
-              final TextStyle italic = DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic);
+              final italic = DefaultTextStyle.of(context).style.copyWith(fontStyle: FontStyle.italic);
               final Widget none = Text('none', style: italic);
               final Widget notSpecified = Text('not specified', style: italic);
-              final List<Widget> children = <Widget>[
+              final children = <Widget>[
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return Cruise.of(context).avatarFor(<User>[user], size: math.min(256.0, constraints.maxWidth), enabled: false);

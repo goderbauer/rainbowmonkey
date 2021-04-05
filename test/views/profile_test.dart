@@ -15,13 +15,13 @@ import '../loggers.dart';
 import '../mocks.dart';
 
 Future<void> main() async {
-  final List<String> log = <String>[];
+  final log = <String>[];
   LoggingTwitarrConfiguration.register(log);
 
   testWidgets('Profile Editor', (WidgetTester tester) async {
     log.clear();
     ProfileTestTwitarr twitarr;
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: ProfileTestTwitarrConfiguration(
         onTwitarr: (ProfileTestTwitarr value) {
           twitarr = value;
@@ -90,7 +90,7 @@ class ProfileTestTwitarrConfiguration extends LoggingTwitarrConfiguration {
 
   @override
   Twitarr createTwitarr() {
-    final ProfileTestTwitarr result = ProfileTestTwitarr(this, LoggingTwitarrConfiguration.log);
+    final result = ProfileTestTwitarr(this, LoggingTwitarrConfiguration.log);
     if (onTwitarr != null)
       onTwitarr(result);
     return result;

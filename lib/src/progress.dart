@@ -46,9 +46,9 @@ class ActiveProgress extends ProgressValue<Null> {
   _ProgressIndex get _index => _ProgressIndex.active;
   @override
   int compareTo(ProgressValue<dynamic> other) {
-    int result = super.compareTo(other);
+    var result = super.compareTo(other);
     if (result == 0) {
-      final ActiveProgress typedOther = other as ActiveProgress;
+      final typedOther = other as ActiveProgress;
       result = ((progress / target) - (typedOther.progress / typedOther.target)).sign.toInt();
     }
     return result;
@@ -75,20 +75,20 @@ typedef Converter<A, B> = B Function(A value);
 
 abstract class Progress<T> implements ValueListenable<ProgressValue<T>> {
   factory Progress(ProgressCallback<T> completer) {
-    final ProgressController<T> controller = ProgressController<T>();
+    final controller = ProgressController<T>();
     controller.start();
     completer(controller).then<void>(controller.complete, onError: controller.completeError);
     return controller.progress;
   }
 
   factory Progress.deferred(ProgressCallback<T> completer) {
-    final ProgressController<T> controller = ProgressController<T>();
+    final controller = ProgressController<T>();
     completer(controller).then<void>(controller.complete, onError: controller.completeError);
     return controller.progress;
   }
 
   factory Progress.paused(ProgressCallback<T> completer, Future<void> starter) {
-    final ProgressController<T> controller = ProgressController<T>();
+    final controller = ProgressController<T>();
     controller.start();
     starter.then((void value) {
       completer(controller).then<void>(controller.complete, onError: controller.completeError);
@@ -97,20 +97,20 @@ abstract class Progress<T> implements ValueListenable<ProgressValue<T>> {
   }
 
   factory Progress.fromFuture(Future<T> future) {
-    final ProgressController<T> controller = ProgressController<T>();
+    final controller = ProgressController<T>();
     controller.start();
     future.then<void>(controller.complete, onError: controller.completeError);
     return controller.progress;
   }
 
   factory Progress.completed(T value) {
-    final ProgressController<T> controller = ProgressController<T>();
+    final controller = ProgressController<T>();
     controller.complete(value);
     return controller.progress;
   }
 
   factory Progress.failed(Exception error, [ StackTrace stackTrace ]) {
-    final ProgressController<T> controller = ProgressController<T>();
+    final controller = ProgressController<T>();
     controller.completeError(error, stackTrace);
     return controller.progress;
   }
@@ -119,9 +119,9 @@ abstract class Progress<T> implements ValueListenable<ProgressValue<T>> {
 
   static Progress<T> convert<F, T>(Progress<F> progress, Converter<F, T> converter) {
     return Progress<T>.deferred((ProgressController<T> completer) async {
-      final Completer<T> innerCompleter = Completer<T>();
+      final innerCompleter = Completer<T>();
       void _listener() {
-        final ProgressValue<F> newValue = progress.value;
+        final newValue = progress.value;
         if (newValue is SuccessfulProgress<F>) {
           innerCompleter.complete(converter(newValue.value));
         } else {
@@ -176,7 +176,7 @@ class _Progress<T> extends _LazyValueNotifier<ProgressValue<T>> implements Progr
   @override
   Future<T> asFuture() {
     if (value is SuccessfulProgress<T>) {
-      final SuccessfulProgress<T> typedValue = value as SuccessfulProgress<T>;
+      final typedValue = value as SuccessfulProgress<T>;
       return Future<T>.value(typedValue.value);
     }
     return valueListenableToFutureAdapter<ProgressValue<T>>(this, (ProgressValue<T> value) {
@@ -189,7 +189,7 @@ class _Progress<T> extends _LazyValueNotifier<ProgressValue<T>> implements Progr
       if (value is SuccessfulProgress<T>)
         return value.value;
       assert(value is FailedProgress);
-      final FailedProgress typedValue = value as FailedProgress;
+      final typedValue = value as FailedProgress;
       return Future<T>.error(typedValue.error, typedValue.stackTrace);
     });
   }
@@ -223,18 +223,18 @@ class ProgressController<T> {
   /// in the main progress.
   Future<R> chain<R>(Progress<R> subprogress, { int steps = 1 }) async {
     assert(subprogress != null);
-    double startingStep = 0.0;
-    final ProgressValue<T> currentProgress = _progress.value;
+    var startingStep = 0.0;
+    final currentProgress = _progress.value;
     if (currentProgress is ActiveProgress)
       startingStep = currentProgress.progress;
     assert(steps == null || (1.0 / steps) <= 1.0 - startingStep);
-    final Completer<R> completer = Completer<R>();
+    final completer = Completer<R>();
     void _listener() {
       switch (subprogress.value._index) {
         case _ProgressIndex.idle:
           break;
         case _ProgressIndex.starting:
-          final StartingProgress newValue = subprogress.value as StartingProgress;
+          final newValue = subprogress.value as StartingProgress;
           if (_progress.value._index.index < newValue._index.index)
             _update(newValue);
           break;
@@ -243,16 +243,16 @@ class ProgressController<T> {
             if (_progress.value._index.index < _ProgressIndex.starting.index)
               start();
           } else {
-            final ActiveProgress newValue = subprogress.value as ActiveProgress;
+            final newValue = subprogress.value as ActiveProgress;
             advance(startingStep + newValue.progress / newValue.target, steps.toDouble());
           }
           break;
         case _ProgressIndex.failed:
-          final FailedProgress newValue = subprogress.value as FailedProgress;
+          final newValue = subprogress.value as FailedProgress;
           completer.completeError(newValue.error, newValue.stackTrace);
           break;
         case _ProgressIndex.successful:
-          final SuccessfulProgress<R> newValue = subprogress.value as SuccessfulProgress<R>;
+          final newValue = subprogress.value as SuccessfulProgress<R>;
           completer.complete(newValue.value);
           break;
       }
@@ -320,7 +320,7 @@ abstract class ContinuousProgress<T> implements Listenable {
   _Progress<T> _best;
 
   T get currentValue {
-    final ProgressValue<T> currentProgress = best.value;
+    final currentProgress = best.value;
     if (currentProgress is SuccessfulProgress<T>)
       return currentProgress.value;
     return null;
@@ -352,7 +352,7 @@ class MutableContinuousProgress<T> extends ContinuousProgress<T> with ChangeNoti
   }
 
   void _update() {
-    final ProgressValue<T> newValue = _current.value;
+    final newValue = _current.value;
     if (newValue >= _best.value) {
       _best.value = newValue;
       if (newValue._index.index > _ProgressIndex.active.index) {

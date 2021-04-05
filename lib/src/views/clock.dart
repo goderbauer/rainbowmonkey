@@ -299,10 +299,10 @@ class TimeZone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Duration absTimeZone = timeZone.abs();
-    final int h = absTimeZone.inHours;
-    final int m = (absTimeZone.inMinutes - (h * 60)).abs();
-    final String s = timeZone.isNegative ? '\u2212' : '+';
+    final absTimeZone = timeZone.abs();
+    final h = absTimeZone.inHours;
+    final m = (absTimeZone.inMinutes - (h * 60)).abs();
+    final s = timeZone.isNegative ? '\u2212' : '+';
     return Text(
       '$s${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}',
       style: Theme.of(context).textTheme.headline5,

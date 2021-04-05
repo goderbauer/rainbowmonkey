@@ -74,15 +74,15 @@ class Seamail extends ChangeNotifier with IterableMixin<SeamailThread>, BusyMixi
       _timer.interested();
       return _threads[thread.id] = SeamailThread.from(thread, this, _twitarr, _credentials, _photoManager, onThreadRead: onThreadRead);
     }
-    final SeamailThread result = _threads[thread.id];
+    final result = _threads[thread.id];
     if (result.updateFrom(thread))
       _timer.interested();
     return result;
   }
 
   int get unreadCount {
-    int result = 0;
-    for (SeamailThread thread in _threads.values)
+    var result = 0;
+    for (var thread in _threads.values)
       result += thread.unreadCount;
     return result;
   }
@@ -102,12 +102,12 @@ class Seamail extends ChangeNotifier with IterableMixin<SeamailThread>, BusyMixi
     startBusy();
     _updating = true;
     try {
-      final SeamailSummary summary = await _twitarr.getSeamailThreads(
+      final summary = await _twitarr.getSeamailThreads(
         credentials: _credentials,
         freshnessToken: _freshnessToken,
       ).asFuture();
-      bool hasNewUnread = false;
-      for (SeamailThreadSummary thread in summary.threads) {
+      var hasNewUnread = false;
+      for (var thread in summary.threads) {
         if (thread.messages.isNotEmpty)
           hasNewUnread = true;
         threadBySummary(thread);
@@ -133,7 +133,7 @@ class Seamail extends ChangeNotifier with IterableMixin<SeamailThread>, BusyMixi
     if (_credentials == null)
       throw const LocalError('Cannot create a thread when not logged in.');
     return Progress<SeamailThread>((ProgressController<SeamailThread> completer) async {
-      final SeamailThreadSummary thread = await completer.chain<SeamailThreadSummary>(
+      final thread = await completer.chain<SeamailThreadSummary>(
         _twitarr.createSeamailThread(
           credentials: _credentials,
           users: users,
@@ -250,7 +250,7 @@ class SeamailThread extends SearchResult with ChangeNotifier, BusyMixin, Compara
     startBusy();
     _updating = true;
     try {
-      final SeamailThreadSummary thread = await _twitarr.getSeamailMessages(
+      final thread = await _twitarr.getSeamailMessages(
         credentials: _credentials,
         threadId: id,
       ).asFuture();
@@ -274,7 +274,7 @@ class SeamailThread extends SearchResult with ChangeNotifier, BusyMixin, Compara
   // implying we should check again soon
   @protected
   bool updateFrom(SeamailThreadSummary thread) {
-    bool interesting = false;
+    var interesting = false;
     if (thread.subject != null)
       _subject = thread.subject;
     if (thread.users != null)
@@ -288,7 +288,7 @@ class SeamailThread extends SearchResult with ChangeNotifier, BusyMixin, Compara
       _hasUnread = thread.unread;
     }
     if (thread.messages != null) {
-      for (SeamailMessageSummary message in thread.messages) {
+      for (var message in thread.messages) {
         if (!_messages.containsKey(message.id))
           interesting = true;
         _messages[message.id] = SeamailMessage.from(message, _photoManager);
@@ -300,7 +300,7 @@ class SeamailThread extends SearchResult with ChangeNotifier, BusyMixin, Compara
         _totalCount = _messages.length;
       if (thread.messages != null) {
         _unreadCount = 0;
-        for (SeamailMessage message in _messages.values) {
+        for (var message in _messages.values) {
           if (!message.readReceipts.containsKey(_credentials.effectiveUsername))
             _unreadCount += 1;
         }
@@ -322,7 +322,7 @@ class SeamailThread extends SearchResult with ChangeNotifier, BusyMixin, Compara
 
   Progress<void> send(String text) {
     return Progress<void>((ProgressController<void> completer) async {
-      final SeamailMessageSummary message = await completer.chain<SeamailMessageSummary>(
+      final message = await completer.chain<SeamailMessageSummary>(
         _twitarr.postSeamailMessage(
           credentials: _credentials,
           threadId: id,

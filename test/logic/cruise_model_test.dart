@@ -10,14 +10,14 @@ import '../loggers.dart';
 import '../mocks.dart';
 
 void main() {
-  final List<String> log = <String>[];
+  final log = <String>[];
   LoggingTwitarrConfiguration.register(log);
 
   testWidgets('CruiseModel', (WidgetTester tester) async {
     log.clear();
-    const LoggingTwitarrConfiguration config1 = LoggingTwitarrConfiguration(1);
-    const LoggingTwitarrConfiguration config2 = LoggingTwitarrConfiguration(2);
-    final CruiseModel model = CruiseModel(
+    const config1 = LoggingTwitarrConfiguration(1);
+    const config2 = LoggingTwitarrConfiguration(2);
+    final model = CruiseModel(
       initialTwitarrConfiguration: config1,
       store: TrivialDataStore(log),
       onError: (UserFriendlyError error) { log.add('error: $error'); },
@@ -82,9 +82,9 @@ void main() {
 
   testWidgets('CruiseModel autologin', (WidgetTester tester) async {
     log.clear();
-    final TrivialDataStore store = TrivialDataStore(log);
+    final store = TrivialDataStore(log);
     store.storedCredentials = const Credentials(username: 'aaa', password: 'aaaaaa', key: 'blabla');
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: const LoggingTwitarrConfiguration(1),
       store: store,
       onError: (UserFriendlyError error) { log.add('error: $error'); },
@@ -118,8 +118,8 @@ void main() {
 
   testWidgets('CruiseModel login again', (WidgetTester tester) async {
     log.clear();
-    final TrivialDataStore store = TrivialDataStore(log);
-    final CruiseModel model = CruiseModel(
+    final store = TrivialDataStore(log);
+    final model = CruiseModel(
       initialTwitarrConfiguration: const LoggingTwitarrConfiguration(0),
       store: store,
       onError: (UserFriendlyError error) { log.add('error: $error'); },
@@ -127,7 +127,7 @@ void main() {
     model.addListener(() { log.add('model changed (isLoggedIn = ${model.isLoggedIn})'); });
     log.add('--- idling');
     await tester.idle();
-    final Seamail seamail0 = model.seamail;
+    final seamail0 = model.seamail;
     seamail0.addListener(() { log.add('seamail0 changed'); });
     log.add('--- waiting 1 minute');
     await tester.pump(const Duration(seconds: 60));
@@ -135,7 +135,7 @@ void main() {
     model.login(username: 'user1', password: 'password1');
     log.add('--- idling');
     await tester.idle();
-    final Seamail seamail1 = model.seamail;
+    final seamail1 = model.seamail;
     seamail1.addListener(() { log.add('seamail1 changed'); });
     log.add('--- waiting 1 minute');
     await tester.pump(const Duration(seconds: 60));
@@ -143,7 +143,7 @@ void main() {
     model.login(username: 'user2', password: 'password2');
     log.add('--- idling');
     await tester.idle();
-    final Seamail seamail2 = model.seamail;
+    final seamail2 = model.seamail;
     seamail2.addListener(() { log.add('seamail2 changed'); });
     log.add('--- waiting 1 minute');
     await tester.pump(const Duration(seconds: 60));
@@ -189,10 +189,10 @@ void main() {
 
   testWidgets('CruiseModel restore server', (WidgetTester tester) async {
     log.clear();
-    final TrivialDataStore store = TrivialDataStore(log);
+    final store = TrivialDataStore(log);
     store.storedSettings[Setting.server] = 'logger:1';
     store.storedCredentials = const Credentials(username: 'aaa', password: 'aaaaaa', key: 'blabla');
-    final CruiseModel model = CruiseModel(
+    final model = CruiseModel(
       initialTwitarrConfiguration: const LoggingTwitarrConfiguration(0),
       store: store,
       onError: (UserFriendlyError error) { log.add('error: $error'); },

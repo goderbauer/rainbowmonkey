@@ -36,14 +36,14 @@ abstract class CommsView extends StatelessWidget implements View {
 
   @override
   Widget buildFab(BuildContext context) {
-    final ContinuousProgress<AuthenticatedUser> userProgress = Cruise.of(context).user;
-    final ContinuousProgress<ServerStatus> serverStatusProgress = Cruise.of(context).serverStatus;
+    final userProgress = Cruise.of(context).user;
+    final serverStatusProgress = Cruise.of(context).serverStatus;
     return AnimatedBuilder(
       animation: Listenable.merge(<Listenable>[userProgress.best, serverStatusProgress.best]),
       builder: (BuildContext context, Widget child) {
         final Widget icon = Icon(addIcon);
-        final AuthenticatedUser user = userProgress.currentValue;
-        final ServerStatus serverStatus = serverStatusProgress.currentValue ?? const ServerStatus();
+        final user = userProgress.currentValue;
+        final serverStatus = serverStatusProgress.currentValue ?? const ServerStatus();
         if (user != null && canPost(serverStatus)) {
           return FloatingActionButton(
             child: icon,
@@ -63,8 +63,8 @@ abstract class CommsView extends StatelessWidget implements View {
   }
 
   DividerCallback getDivider(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final bool showDividers = theme.platform == TargetPlatform.iOS;
+    final theme = Theme.of(context);
+    final showDividers = theme.platform == TargetPlatform.iOS;
     if (showDividers) {
       return (Widget child) {
         return DecoratedBox(
@@ -101,7 +101,7 @@ class PrivateCommsView extends CommsView {
 
   @override
   Widget buildTabIcon(BuildContext context) {
-    final Seamail seamail = Cruise.of(context).seamail;
+    final seamail = Cruise.of(context).seamail;
     return AnimatedBuilder(
       animation: seamail,
       builder: (BuildContext context, Widget child) {
@@ -119,7 +119,7 @@ class PrivateCommsView extends CommsView {
 
   static Future<void> createNewSeamail(BuildContext context, User currentUser, { List<User> others }) async {
     assert(currentUser != null);
-    final SeamailThread thread = await Navigator.push(
+    final thread = await Navigator.push(
       context,
       MaterialPageRoute<SeamailThread>(
         builder: (BuildContext context) => StartSeamailView(currentUser: currentUser.effectiveUser, initialOtherUsers: others),
@@ -141,12 +141,12 @@ class PrivateCommsView extends CommsView {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextTheme textTheme = theme.textTheme;
-    final TextStyle headerStyle = textTheme.headline6;
-    final CruiseModel cruise = Cruise.of(context);
-    final Seamail seamail = cruise.seamail;
-    final ContinuousProgress<ServerStatus> serverStatusProgress = cruise.serverStatus;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final headerStyle = textTheme.headline6;
+    final cruise = Cruise.of(context);
+    final seamail = cruise.seamail;
+    final serverStatusProgress = cruise.serverStatus;
     return ModeratorBuilder(
       builder: (BuildContext context, User currentUser, bool canModerate, bool isModerating) {
         return BusyIndicator(
@@ -154,7 +154,7 @@ class PrivateCommsView extends CommsView {
           child: AnimatedBuilder(
             animation: Listenable.merge(<Listenable>[seamail, serverStatusProgress.best]),
             builder: (BuildContext context, Widget child) {
-              final List<SeamailThread> seamailThreads = seamail.toList()
+              final seamailThreads = seamail.toList()
                 ..sort(
                   // Default SeamailThread sort is not time-based, it's subject-based.
                   (SeamailThread a, SeamailThread b) {
@@ -163,7 +163,7 @@ class PrivateCommsView extends CommsView {
                     return b.id.compareTo(a.id);
                   }
                 );
-              final DividerCallback divide = getDivider(context);
+              final divide = getDivider(context);
               Widget noMessagesWidget;
               if (seamailThreads.isEmpty) {
                 if (cruise.isLoggedIn) {
@@ -265,7 +265,7 @@ class PublicCommsView extends CommsView {
   Widget buildTabLabel(BuildContext context) => const Text('Forums');
 
   static Future<void> createNewForum(BuildContext context) async {
-    final ForumThread thread = await Navigator.push(
+    final thread = await Navigator.push(
       context,
       MaterialPageRoute<ForumThread>(
         builder: (BuildContext context) => const StartForumView(),
@@ -287,13 +287,13 @@ class PublicCommsView extends CommsView {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextTheme textTheme = theme.textTheme;
-    final TextStyle headerStyle = textTheme.headline6;
-    final CruiseModel cruise = Cruise.of(context);
-    final Forums forums = cruise.forums;
-    final Mentions mentions = cruise.mentions;
-    final ContinuousProgress<ServerStatus> serverStatusProgress = cruise.serverStatus;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final headerStyle = textTheme.headline6;
+    final cruise = Cruise.of(context);
+    final forums = cruise.forums;
+    final mentions = cruise.mentions;
+    final serverStatusProgress = cruise.serverStatus;
     return ModeratorBuilder(
       builder: (BuildContext context, User currentUser, bool canModerate, bool isModerating) {
         return BusyIndicator(
@@ -301,8 +301,8 @@ class PublicCommsView extends CommsView {
           child: AnimatedBuilder(
             animation: Listenable.merge(<Listenable>[forums, mentions, serverStatusProgress.best]),
             builder: (BuildContext context, Widget child) {
-              final ServerStatus status = serverStatusProgress.currentValue ?? const ServerStatus();
-              final List<ForumThread> forumThreads = forums.toList()
+              final status = serverStatusProgress.currentValue ?? const ServerStatus();
+              final forumThreads = forums.toList()
                 ..sort(
                   // Default ForumThread sort is not time-based, it's subject-based.
                   (ForumThread a, ForumThread b) {
@@ -318,7 +318,7 @@ class PublicCommsView extends CommsView {
                   }
                 )
                 ..length = forums.totalCount;
-              final DividerCallback divide = getDivider(context);
+              final divide = getDivider(context);
               return Scrollbar(
                 child: JumpToTop(
                   builder: (BuildContext context, ScrollController controller) => CustomScrollView(
@@ -467,8 +467,8 @@ class ForumListTile extends StatelessWidget {
         isThreeLine: true,
       );
     }
-    final String unread = thread.unreadCount > 0 ? ' (${thread.unreadCount} new)' : '';
-    final String recentMessageMetadata = 'Most recent from ${thread.lastMessageUser}';
+    final unread = thread.unreadCount > 0 ? ' (${thread.unreadCount} new)' : '';
+    final recentMessageMetadata = 'Most recent from ${thread.lastMessageUser}';
     return AnimatedOpacity(
       key: ValueKey<ForumThread>(thread),
       opacity: thread.fresh ? 1.0 : 0.5,
@@ -614,7 +614,7 @@ class SeamailListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<SeamailMessage> messages = thread.getMessages();
+    final messages = thread.getMessages();
     String lastMessagePrefix;
     TwitarrString lastMessageBody;
     if (messages.isNotEmpty) {

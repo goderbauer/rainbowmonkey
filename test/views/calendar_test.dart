@@ -48,7 +48,7 @@ class TestCruiseModel extends CruiseModel {
 void main() {
   LoggingTwitarrConfiguration.register(<String>[]);
   testWidgets('Calendar', (WidgetTester tester) async {
-    final TestCruiseModel model1 = TestCruiseModel();
+    final model1 = TestCruiseModel();
 
     Future<void> setupAppWithModel(WidgetTester tester, CruiseModel model) {
       return tester.pumpWidget(
@@ -202,7 +202,7 @@ void main() {
     expect(find.text('Dragonfruit'), findsNothing);
     expect(find.text('Elderberry'), findsNothing);
 
-    final TestCruiseModel model2 = TestCruiseModel();
+    final model2 = TestCruiseModel();
     await setupAppWithModel(tester, model2);
 
     expect(find.text('Coconuts'), findsOneWidget);
@@ -252,7 +252,7 @@ void main() {
   });
 
   testWidgets('Calendar (Details)', (WidgetTester tester) async {
-    final TestCruiseModel model = TestCruiseModel();
+    final model = TestCruiseModel();
     model.calendar.addProgress(Progress<Calendar>.completed(Calendar(events: <Event>[
       Event(
         id: 'f',
@@ -294,8 +294,8 @@ void main() {
   });
 
   testWidgets('Calendar (no reload on return)', (WidgetTester tester) async {
-    int index = 0;
-    final TestCruiseModel model = TestCruiseModel(
+    var index = 0;
+    final model = TestCruiseModel(
       calendar: PeriodicProgress<Calendar>(const Duration(seconds: 1), (ProgressController<Calendar> completer) async {
         await Future<void>.delayed(const Duration(seconds: 10));
         index += 1;
@@ -317,29 +317,29 @@ void main() {
 
     await tester.pump(const Duration(seconds: 2)); // 1 second into first load
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    final HitTestResult result1 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
+    final result1 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
 
     await tester.pump(const Duration(seconds: 5)); // 6 seconds into first load
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    final HitTestResult result2 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
+    final result2 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
     expect(result1.path.map((HitTestEntry entry) => entry.target),
            result2.path.map((HitTestEntry entry) => entry.target));
 
     await tester.pump(const Duration(seconds: 6)); // end of first load, start of next load (continually loading, since load takes longer than delay between loads)
     expect(find.byType(CircularProgressIndicator), findsNWidgets(2));
-    final HitTestResult result3 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator).first));
+    final result3 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator).first));
     expect(result2.path.map((HitTestEntry entry) => entry.target),
            isNot(result3.path.map((HitTestEntry entry) => entry.target)));
 
     await tester.pump(const Duration(seconds: 1)); // 2 seconds into second load, first load's progress indicator has gone away
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    final HitTestResult result4 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
+    final result4 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
     expect(result3.path.map((HitTestEntry entry) => entry.target),
            isNot(result4.path.map((HitTestEntry entry) => entry.target)));
 
     await tester.pump(const Duration(seconds: 600)); // a whole bunch of updates happen here
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    final HitTestResult result5 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
+    final result5 = tester.hitTestOnBinding(tester.getCenter(find.byType(CircularProgressIndicator)));
     expect(result4.path.map((HitTestEntry entry) => entry.target),
            result5.path.map((HitTestEntry entry) => entry.target));
 
@@ -350,7 +350,7 @@ void main() {
   });
 
   testWidgets('Calendar model - sorting 1', (WidgetTester tester) async {
-    final Calendar a = Calendar(events: <Event>[
+    final a = Calendar(events: <Event>[
       Event(
         id: 'id',
         title: 'title2',
@@ -374,7 +374,7 @@ void main() {
   });
 
   testWidgets('Calendar model - sorting 2', (WidgetTester tester) async {
-    final Calendar a = Calendar(events: <Event>[
+    final a = Calendar(events: <Event>[
       Event(
         id: 'id',
         title: 'title2',

@@ -57,9 +57,9 @@ class TweetStream extends ChangeNotifier with BusyMixin {
 
   void _debugVerifyIntegrity() {
     assert(() {
-      for (String id in _postIds.keys)
+      for (var id in _postIds.keys)
         assert(_posts[_postIds[id]].id == id);
-      for (int index = 0; index < _posts.length; index += 1)
+      for (var index = 0; index < _posts.length; index += 1)
         assert(_postIds[_posts[index].id] == index);
       return true;
     }());
@@ -73,34 +73,34 @@ class TweetStream extends ChangeNotifier with BusyMixin {
       return null;
     startBusy();
     _seekingBackwards = true;
-    final bool isInitialFetch = _posts.isEmpty;
+    final isInitialFetch = _posts.isEmpty;
     if (isInitialFetch) {
       assert(!_seekingForwards);
       _seekingForwards = true;
     }
     try {
-      bool didSomething = false;
+      var didSomething = false;
       bool trying;
       do {
         trying = false;
-        final int localPageSize = pageSize;
-        final StreamSliceSummary result = await _twitarr.getStream(
+        final localPageSize = pageSize;
+        final result = await _twitarr.getStream(
           credentials: _credentials,
           direction: StreamDirection.backwards,
           boundaryToken: isInitialFetch ? null : _posts.last.boundaryToken,
           limit: localPageSize,
         ).asFuture();
-        int overlap = 0;
+        var overlap = 0;
         while (overlap < result.posts.length && _postIds.containsKey(result.posts[overlap].id)) {
           overlap += 1;
         }
-        final bool theEnd = result.posts.length < localPageSize;
+        final theEnd = result.posts.length < localPageSize;
         if (overlap < result.posts.length) {
-          final List<StreamPost> newPosts = result.posts.skip(overlap).map<StreamPost>(
+          final newPosts = result.posts.skip(overlap).map<StreamPost>(
             (StreamMessageSummary summary) => StreamPost.from(summary, photoManager),
           ).toList();
-          int index = 0;
-          for (StreamPost post in newPosts) {
+          var index = 0;
+          for (var post in newPosts) {
             _postIds[post.id] = _posts.length + index;
             index += 1;
           }
@@ -143,29 +143,29 @@ class TweetStream extends ChangeNotifier with BusyMixin {
     startBusy();
     _seekingForwards = true;
     try {
-      bool didSomething = false;
+      var didSomething = false;
       bool trying;
       do {
         trying = false;
-        final int localPageSize = pageSize;
-        final StreamSliceSummary result = await _twitarr.getStream(
+        final localPageSize = pageSize;
+        final result = await _twitarr.getStream(
           credentials: _credentials,
           direction: StreamDirection.forwards,
           boundaryToken: _posts.first.boundaryToken,
           limit: localPageSize,
         ).asFuture();
-        int overlap = 0;
-        final int count = result.posts.length;
+        var overlap = 0;
+        final count = result.posts.length;
         while (overlap < count && _postIds.containsKey(result.posts[count - overlap - 1].id)) {
           overlap += 1;
         }
         if (overlap < count) {
-          final List<StreamPost> newPosts = result.posts.take(count - overlap).map<StreamPost>(
+          final newPosts = result.posts.take(count - overlap).map<StreamPost>(
             (StreamMessageSummary summary) => StreamPost.from(summary, photoManager),
           ).toList();
           _posts.insertAll(0, newPosts);
-          int index = 0;
-          for (StreamPost post in _posts) {
+          var index = 0;
+          for (var post in _posts) {
             _postIds[post.id] = index;
             index += 1;
           }
@@ -291,7 +291,7 @@ class TweetStream extends ChangeNotifier with BusyMixin {
         ),
       );
       if (_postIds.containsKey(postId)) {
-        final int postPosition = _postIds[postId];
+        final postPosition = _postIds[postId];
         assert(_posts[postPosition].id == postId);
         _posts[postPosition] = _posts[postPosition].copyWith(isDeleted: true);
         notifyListeners();
@@ -311,7 +311,7 @@ class TweetStream extends ChangeNotifier with BusyMixin {
         ),
       );
       if (_postIds.containsKey(postId)) {
-        final int postPosition = _postIds[postId];
+        final postPosition = _postIds[postId];
         assert(_posts[postPosition].id == postId);
         _posts[postPosition] = _posts[postPosition].copyWith(isLocked: locked);
         notifyListeners();
@@ -322,7 +322,7 @@ class TweetStream extends ChangeNotifier with BusyMixin {
   Progress<void> react(String postId, String reaction, { @required bool selected }) {
     assert(_credentials != null);
     return Progress<void>((ProgressController<void> completer) async {
-      final Map<String, ReactionSummary> reactions = await completer.chain<Map<String, ReactionSummary>>(
+      final reactions = await completer.chain<Map<String, ReactionSummary>>(
         _twitarr.reactTweet(
           credentials: _credentials,
           postId: postId,
@@ -331,7 +331,7 @@ class TweetStream extends ChangeNotifier with BusyMixin {
         ),
       );
       if (_postIds.containsKey(postId)) {
-        final int postPosition = _postIds[postId];
+        final postPosition = _postIds[postId];
         assert(_posts[postPosition].id == postId);
         _posts[postPosition] = _posts[postPosition].copyWith(reactions: Reactions(reactions));
         notifyListeners();
@@ -341,7 +341,7 @@ class TweetStream extends ChangeNotifier with BusyMixin {
 
   Progress<Set<User>> getReactions(String postId, String reaction) {
     return Progress<Set<User>>((ProgressController<Set<User>> completer) async {
-      final Map<String, Set<UserSummary>> reactions = await completer.chain<Map<String, Set<UserSummary>>>(
+      final reactions = await completer.chain<Map<String, Set<UserSummary>>>(
         _twitarr.getTweetReactions(
           postId: postId,
         ),

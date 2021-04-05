@@ -54,8 +54,8 @@ class _UserViewState extends State<UserView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final ContinuousProgress<AuthenticatedUser> oldUser = _user;
-    final ContinuousProgress<AuthenticatedUser> newUser = Cruise.of(context).user;
+    final oldUser = _user;
+    final newUser = Cruise.of(context).user;
     if (oldUser != newUser) {
       _user?.removeListener(_handleNewUser);
       _user = newUser;
@@ -65,8 +65,8 @@ class _UserViewState extends State<UserView> {
   }
 
   void _handleNewUser() {
-    final Progress<AuthenticatedUser> oldBestUser = _bestUser;
-     final Progress<AuthenticatedUser> newBestUser = _user?.best;
+    final oldBestUser = _bestUser;
+     final newBestUser = _user?.best;
     if (oldBestUser != newBestUser) {
       _bestUser?.removeListener(_handleUserUpdate);
       _bestUser = newBestUser;
@@ -105,13 +105,13 @@ class _UserViewState extends State<UserView> {
 
   @override
   Widget build(BuildContext context) {
-    final ContinuousProgress<ServerStatus> serverStatusProgress = Cruise.of(context).serverStatus;
-    final ProgressValue<AuthenticatedUser> _bestUserValue = this._bestUserValue; // https://github.com/dart-lang/sdk/issues/34480
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final serverStatusProgress = Cruise.of(context).serverStatus;
+    final _bestUserValue = this._bestUserValue; // https://github.com/dart-lang/sdk/issues/34480
+    final textTheme = Theme.of(context).textTheme;
     return AnimatedBuilder(
       animation: serverStatusProgress.best,
       builder: (BuildContext context, Widget child) {
-        final ServerStatus status = serverStatusProgress.currentValue ?? const ServerStatus();
+        final status = serverStatusProgress.currentValue ?? const ServerStatus();
         return LayoutBuilder(
           builder: (BuildContext context, BoxConstraints viewportConstraints) {
             Widget header;
@@ -130,7 +130,7 @@ class _UserViewState extends State<UserView> {
               );
               loggedIn = false;
             } else if (_bestUserValue is ActiveProgress) {
-              final ActiveProgress activeProgress = _bestUserValue;
+              final activeProgress = _bestUserValue;
               header = Column(
                 key: _progressHeader,
                 children: <Widget>[
@@ -169,7 +169,7 @@ class _UserViewState extends State<UserView> {
               if (_bestUserValue is SuccessfulProgress<AuthenticatedUser>)
                 user = _bestUserValue.value;
               if (user != null) {
-                final List<Widget> children = <Widget>[
+                final children = <Widget>[
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -220,7 +220,7 @@ class _UserViewState extends State<UserView> {
             }
             assert(loggedIn != null);
 
-            final List<Widget> accountButtons = <Widget>[];
+            final accountButtons = <Widget>[];
             if (loggedIn) {
               accountButtons.add(Expanded(
                 child: LabeledIconButton(
@@ -257,7 +257,7 @@ class _UserViewState extends State<UserView> {
               }
             }
 
-            final List<Widget> tiles = <Widget>[
+            final tiles = <Widget>[
               DefaultTextStyle.merge(
                 textAlign: TextAlign.center,
                 child: SizedBox(
@@ -320,7 +320,7 @@ class _UserViewState extends State<UserView> {
                   nullChild: const Text('Delight in the cruise!', textAlign: TextAlign.center),
                   idleChild: const Text('Please enjoy the cruise!', textAlign: TextAlign.center),
                   builder: (BuildContext context, ServerStatus status) {
-                    final List<Announcement> announcements = status.announcements;
+                    final announcements = status.announcements;
                     if (announcements.isEmpty) {
                       return const Padding(
                         padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),

@@ -54,7 +54,7 @@ class AttachImageButton extends StatelessWidget {
              : images.length > 2 ? 'Attach another image or remove one of the attached images'
              : 'Attach another image or remove the attached image',
       onPressed: Cruise.of(context).isLoggedIn && enabled ? () {
-        List<Uint8List> currentImages = images;
+        var currentImages = images;
         showDialog<void>(
           context: context,
           builder: (BuildContext context) {
@@ -114,16 +114,16 @@ class AttachImageDialog extends StatelessWidget {
   final bool allowMultiple;
 
   void _addImage(ImageSource source) async {
-    final File file = await ImagePicker.pickImage(source: source);
+    final file = await ImagePicker.pickImage(source: source);
     if (file != null)
       onUpdate(images.toList()..add(await file.readAsBytes()));
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> imageList = <Widget>[];
+    final imageList = <Widget>[];
     if (oldImages != null) {
-      for (int index = 0; index < oldImages.length; index += 1) {
+      for (var index = 0; index < oldImages.length; index += 1) {
         imageList.add(_SelectedImage(
           child: Image(image: Cruise.of(context).imageFor(oldImages[index], thumbnail: true)),
           onRemove: () {
@@ -132,7 +132,7 @@ class AttachImageDialog extends StatelessWidget {
         ));
       }
     }
-    for (int index = 0; index < images.length; index += 1) {
+    for (var index = 0; index < images.length; index += 1) {
       imageList.add(_SelectedImage(
         child: Image.memory(images[index]),
         onRemove: () {
@@ -140,7 +140,7 @@ class AttachImageDialog extends StatelessWidget {
         },
       ));
     }
-    final bool canAdd = allowMultiple || (images.isEmpty && (oldImages == null || oldImages.isEmpty));
+    final canAdd = allowMultiple || (images.isEmpty && (oldImages == null || oldImages.isEmpty));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[

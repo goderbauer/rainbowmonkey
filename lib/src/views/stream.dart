@@ -43,8 +43,8 @@ class _TweetStreamViewState extends State<TweetStreamView> with TickerProviderSt
   final List<_PendingSend> _pending = <_PendingSend>[];
 
   void _submitMessage(String value, Uint8List photo) {
-    final Progress<void> progress = _stream.send(text: value, photo: photo);
-    final _PendingSend entry = _PendingSend(progress, value, photo);
+    final progress = _stream.send(text: value, photo: photo);
+    final entry = _PendingSend(progress, value, photo);
     setState(() {
       _pending.add(entry);
       progress.asFuture().then(
@@ -93,7 +93,7 @@ class _TweetStreamViewState extends State<TweetStreamView> with TickerProviderSt
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final TweetStream newStream = Cruise.of(context).tweetStream;
+    final newStream = Cruise.of(context).tweetStream;
     if (newStream != _stream) {
       _scrollController?.dispose();
       _scrollController = ScrollController()
@@ -106,7 +106,7 @@ class _TweetStreamViewState extends State<TweetStreamView> with TickerProviderSt
   @override
   void dispose() {
     _scrollController.dispose();
-    for (AnimationController controller in _controllers)
+    for (var controller in _controllers)
       controller.dispose();
     super.dispose();
   }
@@ -124,8 +124,8 @@ class _TweetStreamViewState extends State<TweetStreamView> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final bool loggedIn = Cruise.of(context).isLoggedIn;
-    final bool canPost = loggedIn && _textController.text.trim().isNotEmpty;
+    final loggedIn = Cruise.of(context).isLoggedIn;
+    final canPost = loggedIn && _textController.text.trim().isNotEmpty;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Twitarr'),
@@ -208,7 +208,7 @@ class _TweetStreamViewState extends State<TweetStreamView> with TickerProviderSt
                         return const Divider(height: 0.0);
                       index -= 2;
                       if (index < _pending.length) {
-                        final _PendingSend entry = _pending[index];
+                        final entry = _pending[index];
                         return ProgressChatLine(
                           key: ObjectKey(entry),
                           progress: entry.progress,
@@ -228,7 +228,7 @@ class _TweetStreamViewState extends State<TweetStreamView> with TickerProviderSt
                         );
                       }
                       index -= _pending.length;
-                      final StreamPost post = _stream[index];
+                      final post = _stream[index];
                       if (post == const StreamPost.sentinel())
                         return null;
                       if (post != null && post.isDeleted)
@@ -315,7 +315,7 @@ class Entry extends StatelessWidget {
         title: Text('...'),
       );
     }
-    final bool isCurrentUser = post.user.sameAs(effectiveCurrentUser);
+    final isCurrentUser = post.user.sameAs(effectiveCurrentUser);
 
     return SizeTransition(
       sizeFactor: animation,
@@ -389,7 +389,7 @@ class _TweetThreadViewState extends State<TweetThreadView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final TweetStream newStream = Cruise.of(context).tweetStream;
+    final newStream = Cruise.of(context).tweetStream;
     if (newStream != _stream) {
       _stream = newStream;
       _reload();
@@ -404,7 +404,7 @@ class _TweetThreadViewState extends State<TweetThreadView> {
   }
 
   static List<FlatStreamPost> _flatten(StreamPost post) {
-    final List<FlatStreamPost> result = <FlatStreamPost>[];
+    final result = <FlatStreamPost>[];
     _flattenWalker(post, 0, result, last: false);
     return result;
   }
@@ -422,7 +422,7 @@ class _TweetThreadViewState extends State<TweetThreadView> {
       return;
     assert(root.children.isNotEmpty);
     depth += 1;
-    for (int index = 0; index < root.children.length; index += 1)
+    for (var index = 0; index < root.children.length; index += 1)
       _flattenWalker(root.children[index], depth, output, last: index == root.children.length - 1);
   }
 
@@ -431,8 +431,8 @@ class _TweetThreadViewState extends State<TweetThreadView> {
   final List<_PendingSend> _pending = <_PendingSend>[];
 
   void _submitMessage(String value, Uint8List photo) {
-    final Progress<void> progress = _stream.send(text: value, photo: photo, parentId: widget.threadId);
-    final _PendingSend entry = _PendingSend(progress, value, photo);
+    final progress = _stream.send(text: value, photo: photo, parentId: widget.threadId);
+    final entry = _PendingSend(progress, value, photo);
     setState(() {
       _pending.add(entry);
       progress.asFuture().then(
@@ -484,9 +484,9 @@ class _TweetThreadViewState extends State<TweetThreadView> {
                   _textController.text = '@${post.user.username} ${_textController.text}';
               }
               _flatList ??= _flatten(post); // this list is "in reverse", index 0 is the newest
-              final bool loggedIn = Cruise.of(context).isLoggedIn;
-              final bool canPostInPrinciple = loggedIn && (post.isLocked ? currentUser.canPostWhenLocked : currentUser.canPost);
-              final bool canPost = canPostInPrinciple && _textController.text.trim().isNotEmpty;
+              final loggedIn = Cruise.of(context).isLoggedIn;
+              final canPostInPrinciple = loggedIn && (post.isLocked ? currentUser.canPostWhenLocked : currentUser.canPost);
+              final canPost = canPostInPrinciple && _textController.text.trim().isNotEmpty;
               return SafeArea(
                 child: Column(
                   children: <Widget>[
@@ -497,7 +497,7 @@ class _TweetThreadViewState extends State<TweetThreadView> {
                         itemCount: _flatList.length + _pending.length + (post.parents != null ? 1 : 0),
                         itemBuilder: (BuildContext context, int index) {
                           if (index < _pending.length) {
-                            final _PendingSend entry = _pending[index];
+                            final entry = _pending[index];
                             return ProgressChatLine(
                               key: ObjectKey(entry),
                               progress: entry.progress,
@@ -653,7 +653,7 @@ class NestedEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isCurrentUser = details.post.user.sameAs(effectiveCurrentUser);
+    final isCurrentUser = details.post.user.sameAs(effectiveCurrentUser);
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
         math.min(details.depth, 6) * 24.0,
@@ -746,7 +746,7 @@ class _EditTweetViewState extends State<EditTweetView> {
   }
 
   void _commit() async {
-    final Progress<void> progress = widget.stream.edit(
+    final progress = widget.stream.edit(
       postId: widget.post.id,
       text: _text.text,
       keptPhotos: _keptPhotos,

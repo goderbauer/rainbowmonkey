@@ -64,8 +64,8 @@ class _ForumThreadViewState extends State<ForumThreadView> with WidgetsBindingOb
   }
 
   void _submitMessage(String value, { @required List<Uint8List> photos }) {
-    final Progress<void> progress = widget.thread.send(value, photos: photos.isEmpty ? null : photos);
-    final _PendingSend entry = _PendingSend(progress, value, photos);
+    final progress = widget.thread.send(value, photos: photos.isEmpty ? null : photos);
+    final entry = _PendingSend(progress, value, photos);
     setState(() {
       _pending.add(entry);
       progress.asFuture().then((void value) {
@@ -94,14 +94,14 @@ class _ForumThreadViewState extends State<ForumThreadView> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
-    final List<ForumMessage> messages = widget.thread.toList().reversed.toList() ?? const <ForumMessage>[];
-    final bool loggedIn = Cruise.of(context).isLoggedIn;
+    final messages = widget.thread.toList().reversed.toList() ?? const <ForumMessage>[];
+    final loggedIn = Cruise.of(context).isLoggedIn;
     return ModeratorBuilder(
       includeBorder: false,
       builder: (BuildContext context, AuthenticatedUser currentUser, bool canModerate, bool isModerating) {
-        final bool canPostInPrinciple = loggedIn && (widget.thread.isLocked ? currentUser.canPostWhenLocked : currentUser.canPost);
-        final bool canPost = canPostInPrinciple && _textController.text.trim().isNotEmpty;
-        final List<Widget> actions = <Widget>[
+        final canPostInPrinciple = loggedIn && (widget.thread.isLocked ? currentUser.canPostWhenLocked : currentUser.canPost);
+        final canPost = canPostInPrinciple && _textController.text.trim().isNotEmpty;
+        final actions = <Widget>[
           ValueListenableBuilder<bool>(
             valueListenable: widget.thread.active,
             builder: (BuildContext context, bool active, Widget child) {
@@ -113,7 +113,7 @@ class _ForumThreadViewState extends State<ForumThreadView> with WidgetsBindingOb
             },
           ),
         ];
-        final List<PopupMenuEntry<VoidCallback>> menuItems = <PopupMenuEntry<VoidCallback>>[];
+        final menuItems = <PopupMenuEntry<VoidCallback>>[];
         if (currentUser != null) {
           switch (currentUser.role) {
             case Role.admin:
@@ -193,8 +193,8 @@ class _ForumThreadViewState extends State<ForumThreadView> with WidgetsBindingOb
                           // when we see the most recent message, mark the thread as read
                           widget.thread.forceRead();
                         }
-                        final ForumMessage message = messages[index];
-                        final bool isCurrentUser = message.user.sameAs(currentUser?.effectiveUser);
+                        final message = messages[index];
+                        final isCurrentUser = message.user.sameAs(currentUser?.effectiveUser);
                         return ChatLine(
                           user: message.user,
                           isCurrentUser: isCurrentUser,
@@ -211,7 +211,7 @@ class _ForumThreadViewState extends State<ForumThreadView> with WidgetsBindingOb
                           getLikesCallback: () => widget.thread.getReactions(message.id, 'like'),
                           timestamp: message.timestamp,
                           onDelete: currentUser != null && ((isCurrentUser && !widget.thread.isLocked) || canModerate) ? () async {
-                            final bool threadDeleted = await ProgressDialog.show<bool>(context, widget.thread.deleteMessage(message.id));
+                            final threadDeleted = await ProgressDialog.show<bool>(context, widget.thread.deleteMessage(message.id));
                             if (threadDeleted)
                               Navigator.pop(context);
                           } : null,
@@ -331,12 +331,12 @@ class _StartForumViewState extends State<StartForumView> {
   }
 
   void _send() async {
-    final Progress<ForumThread> progress = Cruise.of(context).forums.postThread(
+    final progress = Cruise.of(context).forums.postThread(
       subject: _subject.text,
       text: _text.text,
       photos: _photos.isEmpty ? null : _photos,
     );
-    final ForumThread thread = await ProgressDialog.show<ForumThread>(context, progress);
+    final thread = await ProgressDialog.show<ForumThread>(context, progress);
     if (mounted && thread != null)
       Navigator.pop(context, thread);
   }
@@ -475,7 +475,7 @@ class _EditForumPostViewState extends State<EditForumPostView> {
   }
 
   void _commit() async {
-    final Progress<void> progress = widget.thread.edit(
+    final progress = widget.thread.edit(
       messageId: widget.message.id,
       text: _text.text,
       keptPhotos: _keptPhotos,

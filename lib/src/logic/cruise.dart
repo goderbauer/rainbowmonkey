@@ -187,10 +187,10 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
       assert(!_restoringSettings.value);
       assert(_restoredSettings == null);
       _restoringSettings.value = true;
-      final Completer<void> done = Completer<void>();
+      final done = Completer<void>();
       _restoredSettings = done.future;
       try {
-        final Map<Setting, dynamic> settings = await store.restoreSettings().asFuture();
+        final settings = await store.restoreSettings().asFuture();
         if (settings != null) {
           assert(() {
             if (settings.containsKey(Setting.debugNetworkLatency))
@@ -206,7 +206,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
             await SchedulerBinding.instance.reassembleApplication();
           }
         }
-        final Credentials credentials = await store.restoreCredentials().asFuture();
+        final credentials = await store.restoreCredentials().asFuture();
         if (credentials != null && _alive) {
           login(
             username: credentials.username,
@@ -228,7 +228,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
   }) {
     return Progress<String>((ProgressController<String> controller) async {
       logout();
-      final Progress<AuthenticatedUser> userProgress = _twitarr.createAccount(
+      final userProgress = _twitarr.createAccount(
         username: username,
         password: password,
         registrationCode: registrationCode,
@@ -255,7 +255,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
     return Progress<void>((ProgressController<void> controller) async {
       logout();
       try {
-        final Progress<AuthenticatedUser> userProgress = _twitarr.login(
+        final userProgress = _twitarr.login(
           username: username,
           password: password,
           photoManager: this,
@@ -290,7 +290,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
     return Progress<void>((ProgressController<void> controller) async {
       logout();
       try {
-        final Progress<AuthenticatedUser> userProgress = _twitarr.resetPassword(
+        final userProgress = _twitarr.resetPassword(
           username: username,
           registrationCode: registrationCode,
           password: password,
@@ -309,7 +309,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
   Progress<void> changePassword(String newPassword) {
     return Progress<void>((ProgressController<void> controller) async {
       try {
-        final Progress<AuthenticatedUser> userProgress = _twitarr.changePassword(
+        final userProgress = _twitarr.changePassword(
           credentials: _currentCredentials,
           newPassword: newPassword,
           photoManager: this,
@@ -336,7 +336,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
 
   void setAsMod({ @required bool enabled }) {
     assert(enabled != null);
-    AuthenticatedUser user = _user.currentValue;
+    var user = _user.currentValue;
     assert(user != null);
     _asMod = enabled;
     user = user.copyWith(credentials: user.credentials.copyWith(asMod: _asMod));
@@ -345,7 +345,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
   }
 
   void _updateCredentials(AuthenticatedUser user) {
-    final Credentials oldCredentials = _currentCredentials;
+    final oldCredentials = _currentCredentials;
     if (user == null) {
       _currentCredentials = null;
       _user.reset();
@@ -368,7 +368,7 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
           onError: _handleError,
           onCheckForMessages: () {
             if (onCheckForMessages != null) {
-              final DateTime now = DateTime.now().toUtc();
+              final now = DateTime.now().toUtc();
               onCheckForMessages(_currentCredentials, _twitarr, store, now, serverStatus.currentValue.updateIntervals.seamail, forced: true);
             }
           },
@@ -387,10 +387,10 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
           _loggedIn.complete();
       }
     }
-    final Role newRole = user != null ? user.role : Role.none;
-    final ServerStatus status = serverStatus.currentValue;
+    final newRole = user != null ? user.role : Role.none;
+    final status = serverStatus.currentValue;
     if (status != null && newRole != status.userRole) {
-      final ServerStatus newStatus = status.copyWith(userRole: newRole);
+      final newStatus = status.copyWith(userRole: newRole);
       _serverStatus.addProgress(Progress<ServerStatus>.completed(newStatus));
       if (_onscreen)
         _twitarr.enable(newStatus);
@@ -429,13 +429,13 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
   PeriodicProgress<ServerStatus> _serverStatus;
 
   Future<ServerStatus> _updateServerStatus(ProgressController<ServerStatus> completer) async {
-    final List<Announcement> announcements = (await completer.chain<List<AnnouncementSummary>>(_twitarr.getAnnouncements()))
+    final announcements = (await completer.chain<List<AnnouncementSummary>>(_twitarr.getAnnouncements()))
       .map<Announcement>((AnnouncementSummary summary) => summary.toAnnouncement(this))
       .toList()
       ..sort();
-    final Map<String, bool> sections = await completer.chain<Map<String, bool>>(_twitarr.getSectionStatus());
-    final UpdateIntervals updateIntervals = await _twitarr.getUpdateIntervals().asFuture();
-    final ServerStatus result = ServerStatus(
+    final sections = await completer.chain<Map<String, bool>>(_twitarr.getSectionStatus());
+    final updateIntervals = await _twitarr.getUpdateIntervals().asFuture();
+    final result = ServerStatus(
       announcements: announcements,
       updateIntervals: updateIntervals,
       userRole: user.currentValue?.role ?? Role.none,
@@ -494,8 +494,8 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
   }
 
   void _handleThreadRead(String threadId) async {
-    final Notifications notifications = await Notifications.instance;
-    for (String messageId in await store.getNotifications(threadId)) {
+    final notifications = await Notifications.instance;
+    for (var messageId in await store.getNotifications(threadId)) {
       await notifications.messageRead(threadId, messageId);
       await store.removeNotification(threadId, messageId);
     }
@@ -557,22 +557,22 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
 
   @override
   void addListenerForUserPhoto(String username, VoidCallback listener) {
-    final Set<VoidCallback> callbacks = _photoListeners.putIfAbsent(username, () => <VoidCallback>{});
+    final callbacks = _photoListeners.putIfAbsent(username, () => <VoidCallback>{});
     callbacks.add(listener);
   }
 
   @override
   void removeListenerForUserPhoto(String username, VoidCallback listener) {
     if (_photoListeners.containsKey(username)) {
-      final Set<VoidCallback> callbacks = _photoListeners[username];
+      final callbacks = _photoListeners[username];
       callbacks.remove(listener);
     }
   }
 
   void _notifyUserPhotoListeners(String username) {
-    final Set<VoidCallback> callbacks = _photoListeners[username];
+    final callbacks = _photoListeners[username];
     if (callbacks != null) {
-      for (VoidCallback callback in callbacks)
+      for (var callback in callbacks)
         callback();
     }
   }
@@ -580,10 +580,10 @@ class CruiseModel extends ChangeNotifier with WidgetsBindingObserver implements 
   Widget avatarFor(Iterable<User> users, { double size, int seed = 0, bool enabled = true }) {
     assert(users.isNotEmpty);
     assert(seed != null);
-    final math.Random random = math.Random(seed);
-    final List<User> sortedUsers = users.toList()..shuffle(random);
-    final List<Color> colors = sortedUsers.map<Color>((User user) => Color((user.username.hashCode | 0xFF111111) & 0xFF7F7F7F)).toList();
-    final List<ImageProvider> images = sortedUsers.map<ImageProvider>((User user) => AvatarImage(user.username, this, _twitarr, onError: _handleError)).toList();
+    final random = math.Random(seed);
+    final sortedUsers = users.toList()..shuffle(random);
+    final colors = sortedUsers.map<Color>((User user) => Color((user.username.hashCode | 0xFF111111) & 0xFF7F7F7F)).toList();
+    final images = sortedUsers.map<ImageProvider>((User user) => AvatarImage(user.username, this, _twitarr, onError: _handleError)).toList();
     return createAvatarWidgetsFor(sortedUsers, colors, images, size: size, enabled: enabled);
   }
 
@@ -722,7 +722,7 @@ class AvatarImage extends ImageProvider<AvatarImage> {
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType)
       return false;
-    final AvatarImage typedOther = other as AvatarImage;
+    final typedOther = other as AvatarImage;
     return username == typedOther.username
         && photoManager == typedOther.photoManager
         && twitarr == typedOther.twitarr;
@@ -762,12 +762,12 @@ class AvatarImageStreamCompleter extends ImageStreamCompleter {
     while (_dirty) {
       _dirty = false;
       try {
-        final Uint8List bytes = await photoManager.putUserPhotoIfAbsent(
+        final bytes = await photoManager.putUserPhotoIfAbsent(
           username,
           () => twitarr.fetchProfilePicture(username).asFuture(),
         );
-        final ui.Codec codec = await decode(bytes);
-        final ui.FrameInfo frameInfo = await codec.getNextFrame();
+        final codec = await decode(bytes);
+        final frameInfo = await codec.getNextFrame();
         setImage(ImageInfo(image: frameInfo.image));
       } catch (error, stack) { // ignore: avoid_catches_without_on_clauses
         // it's ok to catch all errors here, as we're just rerouting them, not swallowing them
@@ -827,7 +827,7 @@ class TwitarrImage extends ImageProvider<TwitarrImage> {
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType)
       return false;
-    final TwitarrImage typedOther = other as TwitarrImage;
+    final typedOther = other as TwitarrImage;
     return photo.id == typedOther.photo.id
         && thumbnail == typedOther.thumbnail
         && twitarr == typedOther.twitarr;
@@ -863,13 +863,13 @@ class TwitarrImageStreamCompleter extends ImageStreamCompleter {
 
   Future<void> _update() async {
     try {
-      final Uint8List bytes = await photoManager.putImageIfAbsent(
+      final bytes = await photoManager.putImageIfAbsent(
         photoId,
         () => twitarr.fetchImage(photoId, thumbnail: thumbnail).asFuture(),
         thumbnail: thumbnail,
       );
-      final ui.Codec codec = await decode(bytes);
-      final ui.FrameInfo frameInfo = await codec.getNextFrame();
+      final codec = await decode(bytes);
+      final frameInfo = await codec.getNextFrame();
       setImage(ImageInfo(image: frameInfo.image));
     } catch (error, stack) { // ignore: avoid_catches_without_on_clauses
       // it's ok to catch all errors here, as we're just rerouting them, not swallowing them
@@ -889,7 +889,7 @@ class SearchQueryNotifier extends ChangeNotifier {
 
   String pullQuery({ bool tentative = false }) {
     assert(_query != null || tentative);
-    final String result = _query;
+    final result = _query;
     _query = null;
     return result;
   }

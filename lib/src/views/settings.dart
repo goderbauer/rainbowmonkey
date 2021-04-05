@@ -76,7 +76,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       return;
     if (_timer != null)
       _timer.cancel();
-    final DataStore store = widget.store;
+    final store = widget.store;
     _timer = Timer(const Duration(seconds: 2), () async {
       if (_updating)
         return;
@@ -95,7 +95,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
     super.didChangeDependencies();
     if (!initialized) {
       initialized = true;
-      final TwitarrConfiguration config = Cruise.of(context).twitarrConfiguration;
+      final config = Cruise.of(context).twitarrConfiguration;
       if (config is RestTwitarrConfiguration)
         _server.text = config.baseUrl;
     }
@@ -107,7 +107,7 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
   }
 
   bool _isValid(String url) {
-    final Uri parsed = Uri.tryParse(url);
+    final parsed = Uri.tryParse(url);
     return parsed != null
         && parsed.isAbsolute
         && !parsed.hasQuery
@@ -118,12 +118,12 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextStyle headingStyle = theme.textTheme.bodyText1.copyWith(color: theme.colorScheme.onSurface);
-    final CruiseModel cruise = Cruise.of(context);
-    final TwitarrConfiguration currentConfiguration = cruise.twitarrConfiguration;
-    final double latency = cruise.debugLatency;
-    final double reliability = cruise.debugReliability;
+    final theme = Theme.of(context);
+    final headingStyle = theme.textTheme.bodyText1.copyWith(color: theme.colorScheme.onSurface);
+    final cruise = Cruise.of(context);
+    final currentConfiguration = cruise.twitarrConfiguration;
+    final latency = cruise.debugLatency;
+    final reliability = cruise.debugReliability;
     const EdgeInsetsGeometry sliderPadding = EdgeInsetsDirectional.fromSTEB(64.0, 8.0, 16.0, 8.0);
     return Scaffold(
       appBar: AppBar(
@@ -132,9 +132,9 @@ class _SettingsState extends State<Settings> with WidgetsBindingObserver {
       body: ValueListenableBuilder<bool>(
         valueListenable: cruise.restoringSettings,
         builder: (BuildContext context, bool busy, Widget child) {
-          final List<Widget> children = <Widget>[];
+          final children = <Widget>[];
           if (Platform.isAndroid) {
-            final String s = _setBackgroundPollingPeriod == 1 ? '' : 's';
+            final s = _setBackgroundPollingPeriod == 1 ? '' : 's';
             String batteryMessage;
             switch (_isIgnoringBatteryOptimizations) {
               case true:

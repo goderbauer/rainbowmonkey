@@ -28,18 +28,18 @@ class MentionsView extends StatefulWidget {
 class _MentionsViewState extends State<MentionsView> {
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final TextTheme textTheme = theme.textTheme;
-    final DateTime now = Now.of(context);
-    final CruiseModel cruise = Cruise.of(context);
-    final Mentions mentions = cruise.mentions;
-    final ContinuousProgress<ServerStatus> serverStatusProgress = cruise.serverStatus;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final now = Now.of(context);
+    final cruise = Cruise.of(context);
+    final mentions = cruise.mentions;
+    final serverStatusProgress = cruise.serverStatus;
     return AnimatedBuilder(
       animation: Listenable.merge(<Listenable>[mentions, serverStatusProgress.best]),
       builder: (BuildContext context, Widget child) {
-        final List<MentionsItem> items = mentions.items.toList().reversed.toList();
-        final bool hasMentions = items.isNotEmpty;
-        final ServerStatus status = serverStatusProgress.currentValue ?? const ServerStatus();
+        final items = mentions.items.toList().reversed.toList();
+        final hasMentions = items.isNotEmpty;
+        final status = serverStatusProgress.currentValue ?? const ServerStatus();
         return ValueListenableBuilder<bool>(
           valueListenable: mentions.busy,
           builder: (BuildContext context, bool busy, Widget child) {
@@ -79,7 +79,7 @@ class _MentionsViewState extends State<MentionsView> {
                                   child: iconAndLabel(icon: Icons.chat_bubble_outline, message: 'No mentions.'),
                                 );
                               }
-                              final MentionsItem item = items[index];
+                              final item = items[index];
                               if (item is StreamMentionsItem) {
                                 if (!status.streamEnabled)
                                   return const SizedBox.shrink();
@@ -106,10 +106,10 @@ class _MentionsViewState extends State<MentionsView> {
                               if (item is ForumMentionsItem) {
                                 if (!status.forumsEnabled)
                                   return const SizedBox.shrink();
-                                final ForumThread thread = item.thread;
+                                final thread = item.thread;
                                 assert(thread != null);
-                                final String availability = thread == null ? ' (Forum unavailable...)' : '';
-                                final String lastMessage = 'Most recent from ${item.thread.lastMessageUser}';
+                                final availability = thread == null ? ' (Forum unavailable...)' : '';
+                                final lastMessage = 'Most recent from ${item.thread.lastMessageUser}';
                                 return ListTile(
                                   leading: Tooltip(
                                     message: thread.isSticky ? 'Sticky forum' : 'Forum',

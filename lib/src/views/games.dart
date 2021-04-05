@@ -14,11 +14,11 @@ class GameSearchModel extends AssetSearchModel<Game> {
   Parser<Game> parser() => _parser;
 
   static List<Game> _parser(String data) {
-    final List<String> lines = data.split('\n');
-    final List<Game> games = <Game>[];
-    for (String line in lines) {
+    final lines = data.split('\n');
+    final games = <Game>[];
+    for (var line in lines) {
       if (line.isNotEmpty) {
-        final List<String> cells = line.split('\t');
+        final cells = line.split('\t');
         assert(cells.length == 2);
         games.add(Game(cells.first, int.parse(cells.last)));
       }

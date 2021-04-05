@@ -78,9 +78,9 @@ class FormData {
   /// Files are reduced to their file name. Use `toMultipartEncoded` for data
   /// containing files.
   String toUrlEncoded({ Encoding encoding: utf8 }) {
-    final StringBuffer result = StringBuffer();
-    bool delimit = false;
-    for (_FormDataItem item in _data) {
+    final result = StringBuffer();
+    var delimit = false;
+    for (var item in _data) {
       if (delimit)
         result.write('&');
       result
@@ -93,16 +93,16 @@ class FormData {
   }
 
   MultipartFormData toMultipartEncoded() {
-    final String boundary = _generateBoundary(70, math.Random.secure());
-    final Uint8List fullBoundary = utf8.encode('\r\n--$boundary') as Uint8List;
-    final Uint8List contentDispositionHeader = utf8.encode('\r\nContent-Disposition: form-data; name="') as Uint8List;
-    final Uint8List closeQuote = utf8.encode('"') as Uint8List;
-    final Uint8List filenameParameter = utf8.encode('; filename="') as Uint8List;
-    final Uint8List contentTypeHeader = utf8.encode('\r\nContent-Type: ') as Uint8List;
-    final Uint8List blankLine = utf8.encode('\r\n\r\n') as Uint8List;
-    final Uint8List finalBoundary = utf8.encode('--\r\n') as Uint8List;
-    final List<Uint8List> parts = <Uint8List>[];
-    for (_FormDataItem item in _data) {
+    final boundary = _generateBoundary(70, math.Random.secure());
+    final fullBoundary = utf8.encode('\r\n--$boundary') as Uint8List;
+    final contentDispositionHeader = utf8.encode('\r\nContent-Disposition: form-data; name="') as Uint8List;
+    final closeQuote = utf8.encode('"') as Uint8List;
+    final filenameParameter = utf8.encode('; filename="') as Uint8List;
+    final contentTypeHeader = utf8.encode('\r\nContent-Type: ') as Uint8List;
+    final blankLine = utf8.encode('\r\n\r\n') as Uint8List;
+    final finalBoundary = utf8.encode('--\r\n') as Uint8List;
+    final parts = <Uint8List>[];
+    for (var item in _data) {
       parts.add(fullBoundary);
       parts.add(contentDispositionHeader);
       parts.add(utf8.encode(item.name) as Uint8List);
@@ -146,8 +146,8 @@ class FormData {
   ];
 
   String _generateBoundary(int length, math.Random random) {
-    final StringBuffer result = StringBuffer();
-    for (int index = 0; index < length; index += 1)
+    final result = StringBuffer();
+    for (var index = 0; index < length; index += 1)
       result.writeCharCode(_alphabet[random.nextInt(_alphabet.length)]);
     return result.toString();
   }
